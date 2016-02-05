@@ -3,10 +3,12 @@
   <head>
     <meta charset="utf-8" />
     <title>Znode</title>
-    <link rel="stylesheet" href="css/style.css" type="text/css" /> 
+    <link rel="stylesheet" href="css/style.css" type="text/css" />
+    <link href='https://fonts.googleapis.com/css?family=Gloria+Hallelujah' rel='stylesheet' type='text/css'>
     <script type="text/javascript" src="js/libs/jquery.min.js"></script>
     <script type="text/javascript" src="js/libs/jquery.color.js"></script>
     <script type="text/javascript" src="js/libs/raphael.js"></script>
+    <script type="text/javascript" src="js/znode/shaky.js"></script>
     <script type="text/javascript" src="js/znode/nodegraph.js"></script>
     <script type="text/javascript" src="js/znode/ui.js"></script>
   </head>
@@ -29,7 +31,13 @@
         </form>
       </div>
     </div>
-    <div id="canvas"></div>
+    <!-- <div class="container">
+      <div class="col1" id="canvas_main"></div>
+      <canvas class="col2" id="canvas_render"></canvas>
+    </div> -->
+    <div class="container">
+      <div class = "col1" id="canvas_main" width="540" height="600"></div>
+      <canvas class = "col2" id="canvas_render" width="540" height="600"></canvas>
+    </div>
   </body>
 </html>
-  

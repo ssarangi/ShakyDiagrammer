@@ -3,9 +3,48 @@ body, html{
   padding : 0;
   overflow : hidden;
 }
-#canvas{
-  background-color : white;
+
+#canvas_main{
+  background-color: yellow;
 }
+
+#canvas_render{
+  background-color: white;
+}
+
+.container {
+    overflow: hidden;
+}
+.col1,
+.col2 {
+    width: 800px;
+    float: left;
+    margin: 0 0 0 0;
+    /* the trick */
+    /* padding-bottom: 1000px;
+    /* margin-bottom: -1000px; */
+}
+
+container {
+    float:left;
+    width:100%;
+    height:100%;
+}
+
+.col1 {
+    float:left;
+    width:50%;
+    height:100%;
+    background:red;
+}
+
+.col2 {
+    float:left;
+    width:50%;
+    height:100%;
+    background:yellow;
+}
+
 #overlay{
   position: absolute;
   background : url("../images/trans.gif");
@@ -23,7 +62,7 @@ body, html{
   border-bottom : 1px solid #999;
 }
 
-.btn{ 
+.btn{
   padding: 17px 8px 13px 8px;
   height : 10px;
   margin: 0px 0px 0px 2px;
@@ -58,7 +97,7 @@ body, html{
 #files{
   position : relative;
   margin : 10px;
-  
+
   background-color : white;
   width : 230px;
   height : 450px;
@@ -67,7 +106,7 @@ body, html{
 
 #fileTitle{
   font-family : Georgia, serif;
-  font-style : italic; 
+  font-style : italic;
   margin-left : 10px;
   margin-top : 10px;
 }
@@ -108,6 +147,6 @@ li, .file {
   padding : 5px 10px 5px 10px;
 }
 
-textarea, input{ 
+textarea, input{
   outline:none;
 }

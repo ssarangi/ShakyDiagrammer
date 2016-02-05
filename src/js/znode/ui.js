@@ -1,9 +1,9 @@
 $(function(){
-  
+
   var graph = new NodeGraph();
-  
+
   // consider moving to NodeGraph
-  $("#canvas").mouseup(function(e){
+  $("#canvas_main").mouseup(function(e){
      if (openWin.css("display") == "none"){
        var children = $(e.target).children();
        if (children.length > 0){
@@ -14,11 +14,11 @@ $(function(){
        }
      }
   });
-  
+
   // ui code
   var openWin = $("#openWin");
   openWin.hide();
- 
+
   $(".btn").mouseenter(function(){
     $(this).animate({"backgroundColor" : "white"}, 200);
   }).mouseleave(function(){
@@ -30,9 +30,9 @@ $(function(){
   $("#help").click(function(){
     window.open("http://www.zreference.com/znode", "_blank");
   });
-  
+
   $("#save").click(saveFile);
-  
+
   function saveFile(){
     var name = filename.val();
     if (name == "" || name == nameMessage){
@@ -44,18 +44,18 @@ $(function(){
       alert("Your file was saved.");
     });
   }
-  
-  $("#canvas").mousedown(function(){
+
+  $("#canvas_main").mousedown(function(){
     openWin.fadeOut();
   });
-  
+
   $("#open").click(function(){
     var fileList =  $("#files");
     fileList.html("<div>loading...<\/div>");
     openWin.fadeIn();
     fileList.load("json/files.php?"+Math.random()*1000000);
   });
-  
+
   var nameMessage = "Enter your file name";
   var filename = $("#filename").val(nameMessage);
 
@@ -68,17 +68,17 @@ $(function(){
       $(this).val(nameMessage);
     }
   });
-  
+
   $("#nameForm").submit(function(e){
     e.preventDefault();
     saveFile();
   });
-  
+
   $(".file").live('click', function() {
     var name = $(this).text();
     $.getJSON("files/" + name + ".json", {n:Math.random()}, function(data){
        graph.fromJSON(data);
-       
+
        filename.val(name);
     });
   }).live('mouseover', function(){
@@ -86,5 +86,5 @@ $(function(){
   }).live("mouseout", function(){
     $(this).css({"background-color": "white"});
   });
-  
+
 });
