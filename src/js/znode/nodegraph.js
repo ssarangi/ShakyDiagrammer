@@ -279,9 +279,15 @@ function NodeGraph(){
       return n.position().top;
     }
 
-    this.render = function(which_canvas) {
-      var ctx = which_canvas.getContext('2d');
-      var b = shaky.box2D(ctx, this.x() - canvas.position().left, this.y() - topHeight, this.width(), this.height());
+    this.clear = function() {
+      var ctx = canvas_render.getContext('2d');
+      shaky.clear2D(ctx, this.x() - 5, this.y() - 5, this.width() + 5, this.height() + 5);
+    }
+
+    this.render = function() {
+      var ctx = canvas_render.getContext('2d');
+      this.clear();
+      shaky.box2D(ctx, this.x() - canvas.position().left, this.y() - topHeight, this.width(), this.height());
     }
 
     var nodeWidth = n.width();
@@ -436,7 +442,7 @@ function NodeGraph(){
    top.mousedown(addLink);
    bottom.mousedown(addLink);
 
-   this.remove = function(){
+   this.remove = function() {
      for (var i in curr.connections){
        var c = curr.connections[i];
        c.remove();
@@ -455,16 +461,18 @@ function NodeGraph(){
         var loc = resizer.position();
         var x = loc.left;
         var y = loc.top;
+        currentNode.clear();
         n.css({"width" : x + resizer.width() + 1,
                "height" : y + resizer.height() + 1});
 
         txt.css({"width" : n.width() - 5, "height" : n.height() - bar.height() - 5});
-
+        currentNode.clear();
         positionLeft();
         positionRight();
         positionTop();
         positionBottom();
         updateConnections();
+        currentNode.render();
       });
     });
 
@@ -522,7 +530,7 @@ function NodeGraph(){
 
   this.addNode = function(x, y, w, h, noDelete){
     var n = new Node(x, y, w, h, noDelete);
-    n.render(canvas_render);
+    n.render();
   }
 
   var defaultWidth = 100;
@@ -539,7 +547,7 @@ function NodeGraph(){
     var w = current_node_width;
     var h = current_node_height;
     var temp = new Node(mouseX, mouseY + 30, w, h);
-    temp.render(canvas_render);
+    temp.render();
     currentNode = temp;
     currentConnection = null;
   }
@@ -554,6 +562,11 @@ function NodeGraph(){
   }
 
   // defaultNode();
+
+  this.clear_and_render = function() {
+    var ctx = canvas_render.getContext('2d');
+    shaky.clear_canvas(ctx, canvas_render.width, canvas_render.height);
+  }
 
   this.fromJSON = function(data){
     clear();

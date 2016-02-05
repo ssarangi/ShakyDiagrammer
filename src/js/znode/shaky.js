@@ -1,4 +1,8 @@
 function Shaky() {
+  this.clear_canvas = function(ctx, width, height) {
+    ctx.clearRect(0, 0, width, height);
+  }
+
   this.Line = function(ctx, x0, y0, x1, y1) {
     var dx = x1 - x0;
     var dy = y1 - y0;
@@ -26,6 +30,10 @@ function Shaky() {
     ctx.lineWidth = 4;
     ctx.strokeStyle = 'black';
     ctx.stroke();
+  }
+
+  this.clear2D = function(ctx, x, y, width, height) {
+    ctx.clearRect(x, y, width, height);
   }
 
   this.text2D = function(ctx, txt, x, y) {

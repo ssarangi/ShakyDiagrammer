@@ -74,6 +74,10 @@ $(function(){
     saveFile();
   });
 
+$("#render").click(function() {
+  graph.clear_and_render();
+})
+
   $(".file").live('click', function() {
     var name = $(this).text();
     $.getJSON("files/" + name + ".json", {n:Math.random()}, function(data){
