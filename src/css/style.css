@@ -5,16 +5,17 @@ body, html{
 }
 
 #canvas_main{
-  background-color: yellow;
+  background-color: #3E2723;
 }
 
 #canvas_render{
-  background-color: white;
+  background-color: rgba(200, 200, 200, 0.6);
 }
 
 .container {
     overflow: hidden;
 }
+
 .col1,
 .col2 {
     width: 800px;

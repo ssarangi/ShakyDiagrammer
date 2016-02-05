@@ -21,12 +21,13 @@ function NodeGraph(){
   var SHIFT = 16;
   var topHeight = $("#controls").height();
 
-  var paper = new Raphael("canvas_main", 0, topHeight, "100", "100");
+  var paper_raphael = new Raphael("canvas_main", 0, topHeight, "100", "100");
 
   function resizePaper() {
-      paper.setSize(win.width() / 2, win.height() - topHeight);
+      paper_raphael.setSize(win.width() / 2, win.height() - topHeight);
       canvas_render.width = win.width() / 2;
-      canvas_render.height = win.height() - topHeight;
+      canvas_render.height = win.height();
+      paper.setup(canvas_render);
   }
 
   win.resize(resizePaper);
@@ -268,21 +269,24 @@ function NodeGraph(){
 
     this.width = function(){
       return n.width();
-    }
+    };
+
     this.height = function(){
       return n.height();
-    }
+    };
+
     this.x = function(){
       return n.position().left;
-    }
+    };
+
     this.y = function(){
       return n.position().top;
-    }
+    };
 
     this.clear = function() {
       var ctx = canvas_render.getContext('2d');
       shaky.clear2D(ctx, this.x() - 5, this.y() - 5, this.width() + 5, this.height() + 5);
-    }
+    };
 
     this.render = function() {
       var ctx = canvas_render.getContext('2d');
@@ -417,7 +421,7 @@ function NodeGraph(){
       currentNode = curr;
       e.preventDefault();
       showOverlay();
-      var link = paper.path("M 0 0 L 1 1");
+      var link = paper_raphael.path("M 0 0 L 1 1");
       link.attr({"stroke-width":2});
       currentConnection = link;
       currentConnection.parent = $(this);
@@ -426,6 +430,7 @@ function NodeGraph(){
       var loc = $(this).position();
       var nLoc = n.position();
       var x = loc.left + nLoc.left + 5;
+      x = nLoc.left + 5;
       var y = loc.top + nLoc.top - topHeight + 5;
       newNode = true;
 
@@ -451,7 +456,7 @@ function NodeGraph(){
      }
      n.remove();
      delete nodes[this.id];
-   }
+   };
 
     resizer.mousedown(function(e){
       currentNode = curr;
