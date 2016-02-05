@@ -1,7 +1,7 @@
 function Shaky() {
   this.clear_canvas = function(ctx, width, height) {
     ctx.clearRect(0, 0, width, height);
-  }
+  };
 
   this.Line = function(ctx, x0, y0, x1, y1) {
     var dx = x1 - x0;
@@ -31,17 +31,19 @@ function Shaky() {
     //ctx.strokeStyle = 'black';
     //ctx.stroke();
     var path = new paper.Path();
+    this.path = path;
+
+    this.clear_line = function() {
+      this.path.remove();
+    };
+
     path.moveTo(new paper.Point(x0, y0));
     path.strokeColor = 'black';
     path.strokeWidth = 4;
     path.cubicCurveTo(new paper.Point(x3, y3), new paper.Point(x4, y4), new paper.Point(x1, y1));
     path.simplify();
     paper.view.update();
-    return path;
-  };
-
-  this.clear2D = function(ctx, x, y, width, height) {
-    ctx.clearRect(x, y, width, height);
+    return this.path;
   };
 
   this.text2D = function(ctx, txt, x, y) {
@@ -53,10 +55,21 @@ function Shaky() {
     var bottom_x = top_x + width;
     var bottom_y = top_y + height;
 
-    var l1 = this.Line(ctx, top_x, top_y, bottom_x, top_y);
-    var l2 = this.Line(ctx, bottom_x, top_y, bottom_x, bottom_y);
-    var l3 = this.Line(ctx, bottom_x, bottom_y, top_x, bottom_y);
-    var l4 = this.Line(ctx, top_x, bottom_y, top_x, top_y);
+    this.l1 = this.Line(ctx, top_x, top_y, bottom_x, top_y);
+    this.l2 = this.Line(ctx, bottom_x, top_y, bottom_x, bottom_y);
+    this.l3 = this.Line(ctx, bottom_x, bottom_y, top_x, bottom_y);
+    this.l4 = this.Line(ctx, top_x, bottom_y, top_x, top_y);
+
+    this.clear = function() {
+      this.l1.remove();
+      this.l2.remove();
+      this.l3.remove();
+      this.l4.remove();
+      this.group.remove();
+    };
+
+    this.group = new paper.Group([this.l1, this.l2, this.l3, this.l4]);
+    return this;
   };
 
   this.arrowHead = function(ctx, x0, y0, x1, y1) {

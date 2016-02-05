@@ -254,7 +254,7 @@ function NodeGraph(){
     this.addConnection = function(c){
       curr.connections[connectionIndex++] = c;
       return c;
-    }
+    };
 
     canvas.append("<div class='node'/>");
     var n = $(".node").last();
@@ -285,14 +285,17 @@ function NodeGraph(){
 
     this.clear = function() {
       var ctx = canvas_render.getContext('2d');
-      shaky.clear2D(ctx, this.x() - 5, this.y() - 5, this.width() + 5, this.height() + 5);
+      // shaky.clear2D(ctx, this.x() - 5, this.y() - 5, this.width() + 5, this.height() + 5);
+      if (this.box != null) {
+        this.box.clear();
+      }
     };
 
     this.render = function() {
       var ctx = canvas_render.getContext('2d');
       this.clear();
-      shaky.box2D(ctx, this.x() - canvas.position().left, this.y() - topHeight, this.width(), this.height());
-    }
+      this.box = shaky.box2D(ctx, this.x() - canvas.position().left, this.y() - topHeight, this.width(), this.height());
+    };
 
     var nodeWidth = n.width();
     var nodeHeight = n.height();
@@ -401,7 +404,7 @@ function NodeGraph(){
       point.x = nLoc.left + loc.left + 5;
       point.y = nLoc.top - topHeight + loc.top + 5;
       return point;
-    }
+    };
 
     function updateConnections(){
        for (var i in curr.connections){
