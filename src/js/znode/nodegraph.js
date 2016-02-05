@@ -23,9 +23,6 @@ function NodeGraph(){
 
   var paper = new Raphael("canvas_main", 0, topHeight, "100", "100");
 
-  ctx.scale(1, 1);
-  shaky.box2D(ctx, 0, 0, 5, 5);
-
   function resizePaper() {
       paper.setSize(win.width() / 2, win.height() - topHeight);
       canvas_render.width = win.width() / 2;
