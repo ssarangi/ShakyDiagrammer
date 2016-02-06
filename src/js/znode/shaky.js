@@ -118,15 +118,18 @@ function lineWithArrow(x1, y1, x2, y2) {
     this.group = new paper.Group([this.line.path, this.circle_start_pt, this.arrow_path]);
     this.x2 = x2;
     this.y2 = y2;
+    this.group.obj_parent = this;
+
+    this.group.onMouseDown = function(event) {
+      this.selected = true;
+      this.obj_parent.ctx.selection_mode = true;
+      this.obj_parent.selected = true;
+    };
+
     paper.view.update();
   };
 
   this.moveTo(x2, y2);
-  //this.l1 = this.Line(x1, y1, x2, y2, this.line_width);
-  //this.arrow_path = drawFilledPolygon(translateShape(rotateShape(arrowArr,ang),x2,y2));
-  //this.group = new paper.Group([this.l1, this.arrow_path]);
-  //paper.view.update();
-
   return this;
 }
 
@@ -148,6 +151,8 @@ function box2D(top_x, top_y, width, height) {
   };
 
   this.group = new paper.Group([this.l1.path, this.l2.path, this.l3.path, this.l4.path]);
+  this.group.obj_parent = this;
+
   return this;
 }
 
@@ -167,7 +172,7 @@ function Circle(x, y) {
     this.clear();
     this.radius = Math.sqrt(Math.pow(this.center_x - x, 2) + Math.pow(this.center_y - y, 2));
     this.path = paper.Path.Circle(this.center_x, this.center_y, this.radius);
-    this.path.strokeWidth = 3;
+    this.path.strokeWidth = 4;
     this.path.strokeColor = 'black';
     this.path.obj_parent = this;
     paper.view.update();
@@ -199,9 +204,17 @@ function Ellipse(x, y) {
     this.path = paper.Shape.Ellipse({
       point: [this.center_x, this.center_y],
       size: [this.radius, this.radius / 2],
-      strokeWidth: 3,
+      strokeWidth: 4,
       strokeColor: 'black'
     });
+    this.path.obj_parent = this;
+
+    this.path.onMouseDown = function(event) {
+      this.selected = true;
+      this.obj_parent.ctx.selection_mode = true;
+      this.obj_parent.selected = true;
+    };
+
     paper.view.update();
   };
 
@@ -234,6 +247,13 @@ function ShakyRect(x1, y1) {
     this.l3 = new Line(bottom_x, bottom_y, top_x, bottom_y, 4);
     this.l4 = new Line(top_x, bottom_y, top_x, top_y, 4);
     this.group = new paper.Group([this.l1.path, this.l2.path, this.l3.path, this.l4.path]);
+    this.group.obj_parent = this;
+
+    this.group.onMouseDown = function(event) {
+      this.selected = true;
+      this.obj_parent.ctx.selection_mode = true;
+      this.obj_parent.selected = true;
+    };
     paper.view.update();
   };
 
@@ -261,6 +281,15 @@ function RoundedRect(x1, y1) {
     this.path = new paper.Path.RoundRectangle(rect, cornerSize);
     this.path.strokeColor = 'black';
     this.path.strokeWidth = 4;
+
+    this.path.obj_parent = this;
+
+    this.path.onMouseDown = function(event) {
+      this.selected = true;
+      this.obj_parent.ctx.selection_mode = true;
+      this.obj_parent.selected = true;
+    };
+
     paper.view.update();
   };
 
@@ -272,6 +301,15 @@ function FreeHandLine(x, y) {
   this.path.strokeColor = 'black';
   this.path.strokeWidth = 2;
   this.path.setFullySelected();
+
+  this.path.obj_parent = this;
+
+  this.path.onMouseDown = function(event) {
+    this.selected = true;
+    this.obj_parent.ctx.selection_mode = true;
+    this.obj_parent.selected = true;
+  };
+
 
   this.clear = function() {
     this.path.remove();
@@ -305,6 +343,15 @@ function ShakyLine(x, y) {
     this.clear();
     this.line = new Line(this.x1, this.y1, x2, y2, 4);
     this.path = this.line.path;
+
+    this.path.obj_parent = this;
+
+    this.path.onMouseDown = function(event) {
+      this.selected = true;
+      this.obj_parent.ctx.selection_mode = true;
+      this.obj_parent.selected = true;
+    };
+
     paper.view.update();
   };
 
@@ -323,6 +370,15 @@ function StraightLine(x, y) {
   this.path.strokeColor = 'black';
   this.path.strokeWidth = 2;
   this.path.setFullySelected();
+
+  this.path.obj_parent = this;
+
+  this.path.onMouseDown = function(event) {
+    this.selected = true;
+    this.obj_parent.ctx.selection_mode = true;
+    this.obj_parent.selected = true;
+  };
+
 
   this.clear = function() {
     this.path.remove();
@@ -347,6 +403,14 @@ function Text2D(x, y, txt) {
   this.text.style = {
     fontFamily: "Gloria Hallelujah",
     fontSize: 20
+  };
+
+  this.text.obj_parent = this;
+
+  this.text.onMouseDown = function(event) {
+    this.selected = true;
+    this.obj_parent.ctx.selection_mode = true;
+    this.obj_parent.selected = true;
   };
 
   this.clear = function() {
@@ -415,72 +479,84 @@ function Shaky() {
     ctx.clearRect(0, 0, width, height);
   };
 
+  this.diagrams = [];
   this.selection_mode = false;
   var self = this;
 
   this.circle = function(x, y) {
     var c = new Circle(x, y);
     c.ctx = self;
+    self.diagrams.push(c);
     return c;
   };
 
   this.box2d = function(x, y, width, height) {
     var b2d = new box2D(x, y, width, height);
     b2d.ctx = self;
+    self.diagrams.push(b2d);
     return b2d;
   };
 
   this.lineWithArrow = function(x1, y1, x2, y2) {
     var la = new lineWithArrow(x1, y1, x2, y2);
     la.ctx = self;
+    self.diagrams.push(la);
     return la;
   };
 
   this.eraser = function(x, y) {
     var e = new Eraser(x, y);
     e.ctx = self;
+    self.diagrams.push(e);
     return e;
   };
 
   this.freeHandLine = function(x, y) {
     var fh = new FreeHandLine(x, y);
     fh.ctx = self;
+    self.diagrams.push(fh);
     return fh;
   };
 
   this.straightLine = function(x, y) {
     var sl = new StraightLine(x, y);
     sl.ctx = self;
+    self.diagrams.push(sl);
     return sl;
   };
 
   this.shakyLine = function(x, y) {
     var sl = new ShakyLine(x, y);
     sl.ctx = self;
+    self.diagrams.push(sl);
     return sl;
   };
 
   this.roundedRect = function(x, y) {
     var rr = new RoundedRect(x, y);
     rr.ctx = self;
+    self.diagrams.push(rr);
     return rr;
   };
 
   this.ellipse = function(x, y) {
     var el = new Ellipse(x, y);
     el.ctx = self;
+    self.diagrams.push(el);
     return el;
   };
 
   this.text2D = function(x, y) {
     var t2d = new Text2D(x, y, "");
     t2d.ctx = self;
+    self.diagrams.push(t2d);
     return t2d;
   };
 
   this.shakyRect = function(x, y) {
     var sr = new ShakyRect(x, y);
     sr.ctx = self;
+    self.diagrams.push(sr);
     return sr;
   };
 
@@ -501,4 +577,24 @@ function Shaky() {
     this.current_eraser = eraser;
     this.current_eraser.erase("render");
   };
+
+  this.remove_selected = function() {
+    var to_be_removed = [];
+    for (counter in self.diagrams) {
+      var diagram = self.diagrams[counter];
+      if (diagram.selected) {
+        diagram.clear();
+        to_be_removed.push(diagram);
+      }
+    }
+
+    for (counter in to_be_removed) {
+      var diagram = to_be_removed[counter];
+      var index = self.diagrams.indexOf(diagram);
+      if (index > -1)
+        self.diagrams.splice(index, 1);
+    }
+
+    self.selection_mode = false;
+  }
 }

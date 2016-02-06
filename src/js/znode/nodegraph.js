@@ -746,6 +746,7 @@ function NodeGraph(){
     }
     else if (current_tool == "arrow") {
       arrow = new shaky.lineWithArrow(pos.x, pos.y, pos.x, pos.y);
+      console.log("Came to arrow");
     }
     else if (current_tool == "circle") {
       circle = new shaky.circle(pos.x, pos.y);
@@ -771,6 +772,10 @@ function NodeGraph(){
   }
 
   function canvasrender_onMouseDrag(event) {
+    if (shaky.selection_mode == true) {
+      return;
+    }
+
     pos = getMousePos(canvas_render, event);
 
     var dragging = false;
@@ -835,30 +840,18 @@ function NodeGraph(){
     eraser.hide();
   }
 
-  function codeToChar( number ) {
-    if ( number >= 0 && number <= 25 ) // a-z
-      number = number + 97;
-    else if ( number >= 26 && number <= 51 ) // A-Z
-      number = number + (65-26);
-    else
-      return false; // range error
-    return String.fromCharCode( number );
-  }
-
   function canvasrender_onKeyPress(event) {
-    if (current_tool == "text") {
+    if (event.keyCode == 46) {
+      shaky.remove_selected();
+    }
+    else if (event.keyCode == 27) {
+      shaky.selection_mode = false;
+    }
+    else if (current_tool == "text") {
       is_shift_pressed = event.shiftKey;
       var shift_val = is_shift_pressed ? 0: 32;
       var chCode = String.fromCharCode(event.keyCode + shift_val);
       txt.add_char(chCode);
-    }
-    else if (event.keyCode == 46) {
-      if (circle.selected == true) {
-        circle.clear();
-      }
-      else if (event.keyCode == 27) {
-        shaky.selection_mode = false;
-      }
     }
   }
 }
