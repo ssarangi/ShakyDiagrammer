@@ -99,9 +99,9 @@ function lineWithArrow(x1, y1, x2, y2) {
     paper.view.update();
     // Draw 2 circles
     this.circle_start_pt = new paper.Path.Circle(new paper.Point(this.x1, this.y1), 3);
-    this.circle_end_pt = new paper.Path.Circle(new paper.Point(x2, y2), 3);
-    this.circle_start_pt.fillColor = 'yellow';
-    this.circle_end_pt.fillColor = 'yellow';
+    // this.circle_end_pt = new paper.Path.Circle(new paper.Point(x2, y2), 3);
+    this.circle_start_pt.fillColor = 'black';
+    // this.circle_end_pt.fillColor = 'black';
 
     this.line = new Line(this.x1, this.y1, x2, y2, this.line_width);
 
@@ -112,7 +112,7 @@ function lineWithArrow(x1, y1, x2, y2) {
     var y1 = this.y1;
     var ang = Math.atan2(y2-y1,x2-x1);
     this.arrow_path = drawFilledPolygon(translateShape(rotateShape(arrowArr,ang),x2,y2));
-    this.group = new paper.Group([this.line.path, this.circle_start_pt, this.circle_end_pt, this.arrow_path]);
+    this.group = new paper.Group([this.line.path, this.circle_start_pt, this.arrow_path]);
     this.x2 = x2;
     this.y2 = y2;
     paper.view.update();
@@ -313,7 +313,12 @@ function Text2D(x, y, txt) {
   this.text.content = txt;
   this.text.style = {
     fontFamily: "Gloria Hallelujah",
-    fontSize: 30
+    fontSize: 20
+  };
+
+  this.add_char = function(c) {
+    this.text.content += c;
+    paper.view.update();
   };
 
   paper.view.update();

@@ -691,13 +691,16 @@ function NodeGraph(){
   canvas_render.addEventListener("mouseup", canvasrender_onMouseUp, false);
   canvas_render.addEventListener("mousemove", canvasrender_onMouseDrag, false);
   canvas_render.addEventListener("onfocusout", canvasrender_onFocusOut, false);
+  canvas_render.addEventListener("keydown", canvasrender_onKeyPress, true);
+
   var left_button_down = false;
   var free_hand_line = null;
   var straight_line = null;
   var circle = null;
   var rect = null;
   var ellipse = null;
-  var txt = null
+  var txt = null;
+  var arrow = null;
 
   this.draw_menu_changed = function() {
     var eraser = shaky.current_eraser;
@@ -734,6 +737,9 @@ function NodeGraph(){
     else if (current_tool == "straight_line") {
       straight_line = new shaky.straightLine(pos.x, pos.y);
     }
+    else if (current_tool == "arrow") {
+      arrow = new shaky.lineWithArrow(pos.x, pos.y, pos.x, pos.y);
+    }
     else if (current_tool == "circle") {
       circle = new shaky.circle(pos.x, pos.y);
     }
@@ -744,10 +750,10 @@ function NodeGraph(){
       rect = new shaky.roundedRect(pos.x, pos.y);
     }
     else if (current_tool == "text") {
-      var userInput = prompt('Enter Text:');
-      if (userInput != null) {
-        txt = new shaky.text2D(pos.x, pos.y, userInput);
-      }
+      // var userInput = prompt('Enter Text:');
+      // if (userInput != null) {
+        txt = new shaky.text2D(pos.x, pos.y, "");
+      // }
     }
   }
 
@@ -770,6 +776,9 @@ function NodeGraph(){
       }
       else if (current_tool == "straight_line") {
         straight_line.lineTo(pos.x, pos.y);
+      }
+      else if (current_tool == "arrow") {
+        arrow.moveTo(pos.x, pos.y);
       }
       else if (current_tool == "circle") {
         circle.setRadius(pos.x, pos.y);
@@ -802,5 +811,24 @@ function NodeGraph(){
     // Hide the eraser
     var eraser = shaky.current_eraser;
     eraser.hide();
+  }
+
+  function codeToChar( number ) {
+    if ( number >= 0 && number <= 25 ) // a-z
+      number = number + 97;
+    else if ( number >= 26 && number <= 51 ) // A-Z
+      number = number + (65-26);
+    else
+      return false; // range error
+    return String.fromCharCode( number );
+  }
+
+  function canvasrender_onKeyPress(event) {
+    if (current_tool == "text") {
+      is_shift_pressed = event.shiftKey;
+      var shift_val = is_shift_pressed ? 0: 32;
+      var chCode = String.fromCharCode(event.keyCode + shift_val);
+      txt.add_char(chCode);
+    }
   }
 }

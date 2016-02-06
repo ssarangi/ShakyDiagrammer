@@ -93,6 +93,11 @@ $(function(){
     graph.draw_menu_changed();
   });
 
+  $("#arrow").click(function() {
+    graph.set_current_tool("arrow");
+    graph.draw_menu_changed();
+  });
+
   $("#circle").click(function() {
     graph.set_current_tool("circle");
     graph.draw_menu_changed();
