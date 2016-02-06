@@ -406,7 +406,7 @@ function NodeGraph(){
     };
 
     function updateConnections() {
-       curr.render();
+      curr.render();
        for (var i in curr.connections){
          var c = curr.connections[i];
          if (!c.removed) {
@@ -427,7 +427,6 @@ function NodeGraph(){
       showOverlay();
       var link = paper_raphael.path("M 0 0 L 1 1");
       link.attr({"stroke-width":2});
-      link.arrow = shaky.lineWithArrow(0, 0, 1, 1);
       currentConnection = link;
       currentConnection.parent = $(this);
 
