@@ -114,6 +114,7 @@ function NodeGraph(){
       this.raphael.attr("stroke","#000000");
     }).click(function(){
       if (confirm("Are you sure you want to delete this connection?")){
+        this.raphael.arrow.clear();
         this.raphael.remove();
         delete connections[this.raphael.id];
       }
@@ -405,16 +406,47 @@ function NodeGraph(){
       return point;
     };
 
+    function getPositionForConnection(node, connection) {
+      var currDir = connection.attr("class");
+      var x, y;
+      if (currDir == "left"){
+        x = node.x();
+        y = node.y() + node.height() / 2;
+      } else if (currDir == "right"){
+        x = node.x() + node.width();
+        y = node.y() + node.height() / 2;
+      } else if (currDir == "top"){
+        x = node.x() + node.width() / 2;
+        y = node.y();
+      } else if (currDir == "bottom"){
+        x = node.x() + node.width() / 2;
+        y = node.y() + node.height();
+      }
+
+      var point = {};
+      point.x = x - FACTOR * CANVAS_LEFT_OFFSET;
+      point.y = y - topHeight;
+      return point;
+    }
+
     function updateConnections() {
       curr.render();
        for (var i in curr.connections){
          var c = curr.connections[i];
          if (!c.removed) {
+           var arr = c.arrow;
+           arr.clear();
            var nodeA = c.startNode.connectionPos(c.startConnection);
            var nodeB = c.endNode.connectionPos(c.endConnection);
            var nodeAx = nodeA.x - FACTOR * CANVAS_LEFT_OFFSET;
            var nodeBx = nodeB.x - FACTOR * CANVAS_LEFT_OFFSET;
+
            c.attr("path","M " + nodeAx + " " + nodeA.y + " L " + nodeBx + " " + nodeB.y);
+
+           var p1 = getPositionForConnection(c.startNode, c.startConnection);
+           var p2 = getPositionForConnection(c.endNode, c.endConnection);
+
+           c.arrow = new shaky.lineWithArrow(p1.x, p1.y, p2.x, p2.y);
          }
        }
     }
@@ -444,8 +476,10 @@ function NodeGraph(){
         endPtX = mouseX - FACTOR * CANVAS_LEFT_OFFSET;
 
         // Update the rendering
-        if (prevline == null)
+        if (prevline == null) {
           prevline = shaky.lineWithArrow(x, y, endPtX, mouseY);
+          link.arrow = prevline;
+        }
 
         prevline.moveTo(endPtX, mouseY);
         link.attr("path","M " + x + " " + y + " L " + endPtX + " " + mouseY);

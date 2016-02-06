@@ -85,6 +85,12 @@ function lineWithArrow(x1, y1, x2, y2) {
     ];
   }
 
+  this.clear = function() {
+    if (this.group != null) {
+      this.group.remove();
+    }
+  };
+
   this.moveTo = function(x2, y2) {
 
     if (this.group != null)
