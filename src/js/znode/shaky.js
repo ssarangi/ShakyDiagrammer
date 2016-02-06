@@ -424,17 +424,65 @@ function Shaky() {
     return c;
   };
 
-  this.box2D = box2D;
-  this.lineWithArrow = lineWithArrow;
-  this.eraser = Eraser;
-  this.freeHandLine = FreeHandLine;
-  this.straightLine = StraightLine;
-  this.shakyLine = ShakyLine;
-  // this.circle = Circle;
-  this.roundedRect = RoundedRect;
-  this.ellipse = Ellipse;
-  this.text2D = Text2D;
-  this.shakyRect = ShakyRect;
+  this.box2d = function(x, y, width, height) {
+    var b2d = new box2D(x, y, width, height);
+    b2d.ctx = self;
+    return b2d;
+  };
+
+  this.lineWithArrow = function(x1, y1, x2, y2) {
+    var la = new lineWithArrow(x1, y1, x2, y2);
+    la.ctx = self;
+    return la;
+  };
+
+  this.eraser = function(x, y) {
+    var e = new Eraser(x, y);
+    e.ctx = self;
+    return e;
+  };
+
+  this.freeHandLine = function(x, y) {
+    var fh = new FreeHandLine(x, y);
+    fh.ctx = self;
+    return fh;
+  };
+
+  this.straightLine = function(x, y) {
+    var sl = new StraightLine(x, y);
+    sl.ctx = self;
+    return sl;
+  };
+
+  this.shakyLine = function(x, y) {
+    var sl = new ShakyLine(x, y);
+    sl.ctx = self;
+    return sl;
+  };
+
+  this.roundedRect = function(x, y) {
+    var rr = new RoundedRect(x, y);
+    rr.ctx = self;
+    return rr;
+  };
+
+  this.ellipse = function(x, y) {
+    var el = new Ellipse(x, y);
+    el.ctx = self;
+    return el;
+  };
+
+  this.text2D = function(x, y) {
+    var t2d = new Text2D(x, y, "");
+    t2d.ctx = self;
+    return t2d;
+  };
+
+  this.shakyRect = function(x, y) {
+    var sr = new ShakyRect(x, y);
+    sr.ctx = self;
+    return sr;
+  };
 
   this.current_eraser = null;
 
