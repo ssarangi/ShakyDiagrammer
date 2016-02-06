@@ -20,8 +20,10 @@ function NodeGraph(){
   var shaky = new Shaky();
   var SHIFT = 16;
   var topHeight = $("#controls").height();
-  var CANVAS_LEFT_OFFSET = 30;
-  var FACTOR = 2.6;
+  //var CANVAS_LEFT_OFFSET = 30;
+  //var FACTOR = 2.6;
+  var CANVAS_LEFT_OFFSET = 0;
+  var FACTOR = 0;
   var current_tool = "eraser";
 
   var paper_raphael = new Raphael("canvas_main", 0, topHeight, "100", "100");
@@ -472,8 +474,8 @@ function NodeGraph(){
       curr.addConnection(link);
       var loc = $(this).position();
       var nLoc = n.position();
-      // var x = loc.left + nLoc.left + 5;
-      var x = nLoc.left - 0.95 * CANVAS_LEFT_OFFSET;
+      var x = loc.left + nLoc.left + 5;
+      // var x = nLoc.left - 0.95 * CANVAS_LEFT_OFFSET;
       var y = loc.top + nLoc.top - topHeight + 5;
       newNode = true;
 
