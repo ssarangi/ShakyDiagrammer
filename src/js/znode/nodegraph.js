@@ -682,10 +682,6 @@ function NodeGraph(){
   }
 
   ///////////////////////////////////// Canvas Render Methods ////////////////////////////////////////
-  //canvas_render.mousedown(function() {
-  //  alert("helo");
-  //});
-
   canvas_render.addEventListener("mousedown", canvasrender_onMouseDown, false);
   canvas_render.addEventListener("mousedrag", canvasrender_onMouseDrag, false);
   canvas_render.addEventListener("mouseup", canvasrender_onMouseUp, false);
@@ -727,6 +723,10 @@ function NodeGraph(){
     if (event.which === 1)
       left_button_down = true;
 
+    if (shaky.selection_mode == true) {
+      return;
+    }
+
     pos = getMousePos(canvas_render, event);
     if (current_tool == "eraser") {
       var eraser = new shaky.eraser(pos.x, pos.y);
@@ -758,6 +758,9 @@ function NodeGraph(){
       // if (userInput != null) {
         txt = new shaky.text2D(pos.x, pos.y, "");
       // }
+    }
+    else if (current_tool == "select") {
+      // Do not do anything.
     }
   }
 
@@ -795,6 +798,9 @@ function NodeGraph(){
       }
       else if (current_tool == "ellipse") {
         ellipse.setRadius(pos.x, pos.y);
+      }
+      else if (current_tool == "select") {
+        // Do not do anything.
       }
     }
     else {
@@ -836,6 +842,14 @@ function NodeGraph(){
       var shift_val = is_shift_pressed ? 0: 32;
       var chCode = String.fromCharCode(event.keyCode + shift_val);
       txt.add_char(chCode);
+    }
+    else if (event.keyCode == 46) {
+      if (circle.selected == true) {
+        circle.clear();
+      }
+      else if (event.keyCode == 27) {
+        shaky.selection_mode = false;
+      }
     }
   }
 }

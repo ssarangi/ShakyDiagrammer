@@ -10,7 +10,7 @@ body, html{
 
 #canvas_render{
   background-color: rgba(200, 200, 200, 1.0);
-  cursor: pointer;
+  cursor: default;
 }
 
 #canvas_render:active {

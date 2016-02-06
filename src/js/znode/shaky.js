@@ -2,6 +2,7 @@ function Line(x0, y0, x1, y1, stroke_width) {
   this.clear = function() {
     if (this.path != null)
       this.path.remove();
+      paper.view.update();
   };
 
   var dx = x1 - x0;
@@ -37,6 +38,7 @@ function Line(x0, y0, x1, y1, stroke_width) {
 function lineWithArrow(x1, y1, x2, y2) {
   this.clear = function() {
     this.group.remove();
+    paper.view.update();
   };
 
   var arrowArr = [
@@ -88,6 +90,7 @@ function lineWithArrow(x1, y1, x2, y2) {
   this.clear = function() {
     if (this.group != null) {
       this.group.remove();
+      paper.view.update();
     }
   };
 
@@ -151,10 +154,13 @@ function box2D(top_x, top_y, width, height) {
 function Circle(x, y) {
   this.center_x = x;
   this.center_y = y;
+  this.selected = false;
 
   this.clear = function() {
-    if (this.path != null)
+    if (this.path != null) {
       this.path.remove();
+      paper.view.update();
+    }
   };
 
   this.setRadius = function(x, y) {
@@ -163,7 +169,14 @@ function Circle(x, y) {
     this.path = paper.Path.Circle(this.center_x, this.center_y, this.radius);
     this.path.strokeWidth = 3;
     this.path.strokeColor = 'black';
+    this.path.obj_parent = this;
     paper.view.update();
+
+    this.path.onMouseDown = function(event) {
+      this.selected = true;
+      this.obj_parent.ctx.selection_mode = true;
+      this.obj_parent.selected = true;
+    }
   };
 
   return this;
@@ -174,8 +187,10 @@ function Ellipse(x, y) {
   this.center_y = y;
 
   this.clear = function() {
-    if (this.path != null)
+    if (this.path != null) {
       this.path.remove();
+      paper.view.update();
+    }
   };
 
   this.setRadius = function(x, y) {
@@ -198,8 +213,10 @@ function ShakyRect(x1, y1) {
   this.y1 = y1;
 
   this.clear = function() {
-    if (this.group != null)
+    if (this.group != null) {
       this.group.remove();
+      paper.view.update();
+    }
   };
 
   this.rectTo = function(x2, y2) {
@@ -229,8 +246,10 @@ function RoundedRect(x1, y1) {
   this.y1 = y1;
 
   this.clear = function() {
-    if (this.path != null)
+    if (this.path != null) {
       this.path.remove();
+      paper.view.update();
+    }
   };
 
   this.rectTo = function(x2, y2) {
@@ -256,6 +275,7 @@ function Eraser(x, y) {
 
   this.clear = function() {
     this.group.remove();
+    paper.view.update();
   };
 
   this.hide = function() {
@@ -302,6 +322,7 @@ function FreeHandLine(x, y) {
 
   this.clear = function() {
     this.path.remove();
+    paper.view.update();
   };
 
   this.add_point = function(x, y) {
@@ -325,6 +346,7 @@ function StraightLine(x, y) {
 
   this.clear = function() {
     this.path.remove();
+    paper.view.update();
   };
 
   this.lineTo = function(x, y) {
@@ -347,6 +369,11 @@ function Text2D(x, y, txt) {
     fontSize: 20
   };
 
+  this.clear = function() {
+    this.text.remove();
+    paper.view.update();
+  };
+
   this.add_char = function(c) {
     this.text.content += c;
     paper.view.update();
@@ -361,12 +388,20 @@ function Shaky() {
     ctx.clearRect(0, 0, width, height);
   };
 
+  this.selection_mode = false;
+
+  this.circle = function(x, y) {
+    var c = new Circle(x, y);
+    c.ctx = this;
+    return c;
+  };
+
   this.box2D = box2D;
   this.lineWithArrow = lineWithArrow;
   this.eraser = Eraser;
   this.freeHandLine = FreeHandLine;
   this.straightLine = StraightLine;
-  this.circle = Circle;
+  // this.circle = Circle;
   this.roundedRect = RoundedRect;
   this.ellipse = Ellipse;
   this.text2D = Text2D;
