@@ -697,6 +697,7 @@ function NodeGraph(){
   var free_hand_line = null;
   var straight_line = null;
   var circle = null;
+  var shaky_rect = null;
   var rect = null;
   var ellipse = null;
   var txt = null;
@@ -746,6 +747,9 @@ function NodeGraph(){
     else if (current_tool == "ellipse") {
       ellipse = new shaky.ellipse(pos.x, pos.y);
     }
+    else if (current_tool == "shaky_rect") {
+      shaky_rect = new shaky.shakyRect(pos.x, pos.y);
+    }
     else if (current_tool == "rect") {
       rect = new shaky.roundedRect(pos.x, pos.y);
     }
@@ -777,6 +781,12 @@ function NodeGraph(){
       else if (current_tool == "straight_line") {
         straight_line.lineTo(pos.x, pos.y);
       }
+      else if (current_tool == "shaky_rect") {
+        shaky_rect.rectTo(pos.x, pos.y);
+      }
+      else if (current_tool == "rect") {
+        rect.rectTo(pos.x, pos.y);
+      }
       else if (current_tool == "arrow") {
         arrow.moveTo(pos.x, pos.y);
       }
@@ -785,9 +795,6 @@ function NodeGraph(){
       }
       else if (current_tool == "ellipse") {
         ellipse.setRadius(pos.x, pos.y);
-      }
-      else if (current_tool == "rect") {
-        rect.rectTo(pos.x, pos.y);
       }
     }
     else {

@@ -108,6 +108,11 @@ $(function(){
     graph.draw_menu_changed();
   });
 
+  $("#shaky_rect").click(function() {
+    graph.set_current_tool("shaky_rect");
+    graph.draw_menu_changed();
+  });
+
   $("#rect").click(function() {
     graph.set_current_tool("rect");
     graph.draw_menu_changed();

@@ -193,6 +193,37 @@ function Ellipse(x, y) {
   return this;
 }
 
+function ShakyRect(x1, y1) {
+  this.x1 = x1;
+  this.y1 = y1;
+
+  this.clear = function() {
+    if (this.group != null)
+      this.group.remove();
+  };
+
+  this.rectTo = function(x2, y2) {
+    this.clear();
+    this.x2 = x2;
+    this.y2 = y2;
+
+    var top_x = this.x1;
+    var top_y = this.y1;
+    var bottom_x = this.x2;
+    var bottom_y = this.y2;
+
+    this.l1 = new Line(top_x, top_y, bottom_x, top_y, 4);
+    this.l2 = new Line(bottom_x, top_y, bottom_x, bottom_y, 4);
+    this.l3 = new Line(bottom_x, bottom_y, top_x, bottom_y, 4);
+    this.l4 = new Line(top_x, bottom_y, top_x, top_y, 4);
+    this.group = new paper.Group([this.l1.path, this.l2.path, this.l3.path, this.l4.path]);
+    paper.view.update();
+  };
+
+  return this;
+}
+
+
 function RoundedRect(x1, y1) {
   this.x1 = x1;
   this.y1 = y1;
@@ -339,6 +370,7 @@ function Shaky() {
   this.roundedRect = RoundedRect;
   this.ellipse = Ellipse;
   this.text2D = Text2D;
+  this.shakyRect = ShakyRect;
 
   this.current_eraser = null;
 
