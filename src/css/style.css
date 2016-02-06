@@ -79,6 +79,10 @@ container {
   background-color : #efefef;
 }
 
+.btn.active {
+  background-color: yellow;
+}
+
 #logo{
   position : relative;
   float : left;
