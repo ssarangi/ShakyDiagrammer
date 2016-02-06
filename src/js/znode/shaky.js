@@ -267,53 +267,6 @@ function RoundedRect(x1, y1) {
   return this;
 }
 
-function Eraser(x, y) {
-  this.x = x;
-  this.y = y;
-  this.background_color = new paper.Color(200 / 255, 200 / 255, 200 / 255, 1.0);
-  this.render_color = 'white';
-
-  this.clear = function() {
-    this.group.remove();
-    paper.view.update();
-  };
-
-  this.hide = function() {
-    this.group.visible = false;
-  };
-
-  this.unhide = function() {
-    this.group.visible = true;
-  };
-
-  this.erase = function(what_to_do) {
-    if (this.path == null)
-      this.path = new paper.Path.Rectangle(new paper.Point(x - 20, y - 20), new paper.Point(x + 20, y + 20));
-
-    if (what_to_do == "erase") {
-      this.path.fillColor = this.background_color;
-      this.path.strokeColor = null;
-    }
-    else if (what_to_do == "render") {
-      this.path.fillColor = this.render_color;
-      this.path.strokeColor = 'black';
-    }
-
-    if (this.group == null)
-      this.group = new paper.Group([this.path]);
-
-    paper.view.update();
-  };
-
-  this.moveTo = function(x, y) {
-    if (this.path != null)
-      this.path.position = new paper.Point(x, y);
-  };
-
-  this.erase("render");
-  return this;
-}
-
 function FreeHandLine(x, y) {
   this.path = new paper.Path();
   this.path.strokeColor = 'black';
@@ -335,6 +288,33 @@ function FreeHandLine(x, y) {
 
   return this;
 }
+
+function ShakyLine(x, y) {
+  this.x1 = x;
+  this.y1 = y;
+  this.path = null;
+
+  this.clear = function() {
+    if (this.path != null) {
+      this.path.remove();
+      paper.view.update();
+    }
+  };
+
+  this.lineTo = function(x2, y2) {
+    this.clear();
+    this.line = new Line(this.x1, this.y1, x2, y2, 4);
+    this.path = this.line.path;
+    paper.view.update();
+  };
+
+  this.finalize = function() {
+    // Do nothing
+  };
+
+  return this;
+}
+
 
 function StraightLine(x, y) {
   this.path = new paper.Path();
@@ -383,6 +363,53 @@ function Text2D(x, y, txt) {
   return this;
 }
 
+function Eraser(x, y) {
+  this.x = x;
+  this.y = y;
+  this.background_color = new paper.Color(200 / 255, 200 / 255, 200 / 255, 1.0);
+  this.render_color = 'white';
+
+  this.clear = function() {
+    this.group.remove();
+    paper.view.update();
+  };
+
+  this.hide = function() {
+    this.group.visible = false;
+  };
+
+  this.unhide = function() {
+    this.group.visible = true;
+  };
+
+  this.erase = function(what_to_do) {
+    if (this.path == null)
+      this.path = new paper.Path.Rectangle(new paper.Point(x - 20, y - 20), new paper.Point(x + 20, y + 20));
+
+    if (what_to_do == "erase") {
+      this.path.fillColor = this.background_color;
+      this.path.strokeColor = null;
+    }
+    else if (what_to_do == "render") {
+      this.path.fillColor = this.render_color;
+      this.path.strokeColor = 'black';
+    }
+
+    if (this.group == null)
+      this.group = new paper.Group([this.path]);
+
+    paper.view.update();
+  };
+
+  this.moveTo = function(x, y) {
+    if (this.path != null)
+      this.path.position = new paper.Point(x, y);
+  };
+
+  this.erase("render");
+  return this;
+}
+
 function Shaky() {
   this.clear_canvas = function(ctx, width, height) {
     ctx.clearRect(0, 0, width, height);
@@ -402,6 +429,7 @@ function Shaky() {
   this.eraser = Eraser;
   this.freeHandLine = FreeHandLine;
   this.straightLine = StraightLine;
+  this.shakyLine = ShakyLine;
   // this.circle = Circle;
   this.roundedRect = RoundedRect;
   this.ellipse = Ellipse;

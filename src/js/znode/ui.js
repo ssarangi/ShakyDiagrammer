@@ -83,6 +83,11 @@ $(function(){
     graph.draw_menu_changed();
   });
 
+  $("#shaky_line").click(function() {
+    graph.set_current_tool("shaky_line");
+    graph.draw_menu_changed();
+  });
+
   $("#straight_line").click(function() {
     graph.set_current_tool("straight_line");
     graph.draw_menu_changed();

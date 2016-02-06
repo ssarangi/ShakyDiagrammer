@@ -700,6 +700,7 @@ function NodeGraph(){
   var ellipse = null;
   var txt = null;
   var arrow = null;
+  var shaky_line = null;
 
   this.draw_menu_changed = function() {
     var eraser = shaky.current_eraser;
@@ -736,6 +737,9 @@ function NodeGraph(){
     }
     else if (current_tool == "free_hand_line") {
       free_hand_line = new shaky.freeHandLine(pos.x, pos.y);
+    }
+    else if (current_tool == "shaky_line") {
+      shaky_line = new shaky.shakyLine(pos.x, pos.y);
     }
     else if (current_tool == "straight_line") {
       straight_line = new shaky.straightLine(pos.x, pos.y);
@@ -782,6 +786,9 @@ function NodeGraph(){
       }
       else if (current_tool == "free_hand_line") {
         free_hand_line.add_point(pos.x, pos.y);
+      }
+      else if (current_tool == "shaky_line") {
+        shaky_line.lineTo(pos.x, pos.y);
       }
       else if (current_tool == "straight_line") {
         straight_line.lineTo(pos.x, pos.y);
