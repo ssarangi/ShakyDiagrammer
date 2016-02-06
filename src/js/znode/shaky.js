@@ -98,6 +98,11 @@ function lineWithArrow(x1, y1, x2, y2) {
 
     paper.view.update();
     // Draw 2 circles
+    this.circle_start_pt = new paper.Path.Circle(new paper.Point(this.x1, this.y1), 3);
+    this.circle_end_pt = new paper.Path.Circle(new paper.Point(x2, y2), 3);
+    this.circle_start_pt.fillColor = 'yellow';
+    this.circle_end_pt.fillColor = 'yellow';
+
     this.line = new Line(this.x1, this.y1, x2, y2, this.line_width);
 
     if (this.arrow_path != null)
@@ -107,7 +112,7 @@ function lineWithArrow(x1, y1, x2, y2) {
     var y1 = this.y1;
     var ang = Math.atan2(y2-y1,x2-x1);
     this.arrow_path = drawFilledPolygon(translateShape(rotateShape(arrowArr,ang),x2,y2));
-    this.group = new paper.Group([this.line.path, this.arrow_path]);
+    this.group = new paper.Group([this.line.path, this.circle_start_pt, this.circle_end_pt, this.arrow_path]);
     this.x2 = x2;
     this.y2 = y2;
     paper.view.update();
@@ -141,6 +146,10 @@ function box2D(top_x, top_y, width, height) {
 
   this.group = new paper.Group([this.l1.path, this.l2.path, this.l3.path, this.l4.path]);
   return this;
+}
+
+function eraser(x, y) {
+  var a = 10;
 }
 
 function Shaky() {
