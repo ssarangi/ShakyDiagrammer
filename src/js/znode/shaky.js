@@ -389,10 +389,11 @@ function Shaky() {
   };
 
   this.selection_mode = false;
+  var self = this;
 
   this.circle = function(x, y) {
     var c = new Circle(x, y);
-    c.ctx = this;
+    c.ctx = self;
     return c;
   };
 
