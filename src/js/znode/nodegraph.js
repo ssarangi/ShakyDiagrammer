@@ -22,14 +22,20 @@ function NodeGraph(){
   var topHeight = $("#controls").height();
   var CANVAS_LEFT_OFFSET = 30;
   var FACTOR = 2.6;
+  var current_tool = "eraser";
 
   var paper_raphael = new Raphael("canvas_main", 0, topHeight, "100", "100");
+
+  this.set_current_tool = function(tool) {
+    current_tool = tool;
+  };
 
   function resizePaper() {
       paper_raphael.setSize(win.width() / 2, win.height() - topHeight);
       canvas_render.width = win.width() / 2;
       canvas_render.height = win.height();
       paper.setup(canvas_render);
+      shaky.initialize();
   }
 
   win.resize(resizePaper);
@@ -673,5 +679,128 @@ function NodeGraph(){
     str = str.replace(/\0/g,'\\0');
     str = str.replace(/\n/g,'\\\\n');
     return str;
+  }
+
+  ///////////////////////////////////// Canvas Render Methods ////////////////////////////////////////
+  //canvas_render.mousedown(function() {
+  //  alert("helo");
+  //});
+
+  canvas_render.addEventListener("mousedown", canvasrender_onMouseDown, false);
+  canvas_render.addEventListener("mousedrag", canvasrender_onMouseDrag, false);
+  canvas_render.addEventListener("mouseup", canvasrender_onMouseUp, false);
+  canvas_render.addEventListener("mousemove", canvasrender_onMouseDrag, false);
+  canvas_render.addEventListener("onfocusout", canvasrender_onFocusOut, false);
+  var left_button_down = false;
+  var free_hand_line = null;
+  var straight_line = null;
+  var circle = null;
+  var rect = null;
+  var ellipse = null;
+  var txt = null
+
+  this.draw_menu_changed = function() {
+    var eraser = shaky.current_eraser;
+    if (current_tool != "eraser") {
+      eraser.hide();
+    }
+    else {
+      eraser.unhide();
+    }
+
+    shaky.refresh_canvas();
+  };
+
+  function getMousePos(canvas, evt) {
+    var rect = canvas.getBoundingClientRect();
+    return {
+      x: evt.clientX - rect.left,
+      y: evt.clientY - rect.top
+    };
+  }
+
+  function canvasrender_onMouseDown(event) {
+    if (event.which === 1)
+      left_button_down = true;
+
+    pos = getMousePos(canvas_render, event);
+    if (current_tool == "eraser") {
+      var eraser = new shaky.eraser(pos.x, pos.y);
+      shaky.update_eraser(eraser);
+    }
+    else if (current_tool == "free_hand_line") {
+      free_hand_line = new shaky.freeHandLine(pos.x, pos.y);
+    }
+    else if (current_tool == "straight_line") {
+      straight_line = new shaky.straightLine(pos.x, pos.y);
+    }
+    else if (current_tool == "circle") {
+      circle = new shaky.circle(pos.x, pos.y);
+    }
+    else if (current_tool == "ellipse") {
+      ellipse = new shaky.ellipse(pos.x, pos.y);
+    }
+    else if (current_tool == "rect") {
+      rect = new shaky.roundedRect(pos.x, pos.y);
+    }
+    else if (current_tool == "text") {
+      var userInput = prompt('Enter Text:');
+      if (userInput != null) {
+        txt = new shaky.text2D(pos.x, pos.y, userInput);
+      }
+    }
+  }
+
+  function canvasrender_onMouseDrag(event) {
+    pos = getMousePos(canvas_render, event);
+
+    var dragging = false;
+    var eraser = null;
+    if (left_button_down == true) {
+      dragging = true;
+    }
+
+    if (dragging) {
+      if (current_tool == "eraser") {
+        eraser = new shaky.eraser(pos.x, pos.y);
+        shaky.update_eraser(eraser);
+      }
+      else if (current_tool == "free_hand_line") {
+        free_hand_line.add_point(pos.x, pos.y);
+      }
+      else if (current_tool == "straight_line") {
+        straight_line.lineTo(pos.x, pos.y);
+      }
+      else if (current_tool == "circle") {
+        circle.setRadius(pos.x, pos.y);
+      }
+      else if (current_tool == "ellipse") {
+        ellipse.setRadius(pos.x, pos.y);
+      }
+      else if (current_tool == "rect") {
+        rect.rectTo(pos.x, pos.y);
+      }
+    }
+    else {
+      if (current_tool == "eraser") {
+        eraser = shaky.current_eraser;
+        eraser.moveTo(pos.x, pos.y);
+      }
+    }
+  }
+
+  function canvasrender_onMouseUp(event) {
+    if (event.which === 1)
+      left_button_down = false;
+
+    if (current_tool == "free_hand_line") {
+      free_hand_line.finalize();
+    }
+  }
+
+  function canvasrender_onFocusOut(event) {
+    // Hide the eraser
+    var eraser = shaky.current_eraser;
+    eraser.hide();
   }
 }

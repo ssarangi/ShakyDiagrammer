@@ -9,7 +9,12 @@ body, html{
 }
 
 #canvas_render{
-  background-color: rgba(200, 200, 200, 0.6);
+  background-color: rgba(200, 200, 200, 1.0);
+  cursor: pointer;
+}
+
+#canvas_render:active {
+  cursor: crosshair;
 }
 
 .container {

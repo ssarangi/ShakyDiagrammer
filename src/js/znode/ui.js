@@ -74,9 +74,44 @@ $(function(){
     saveFile();
   });
 
-$("#render").click(function() {
-  graph.clear_and_render();
-})
+  $("#render").click(function() {
+    graph.clear_and_render();
+  });
+
+  $("#eraser").click(function() {
+    graph.set_current_tool("eraser");
+    graph.draw_menu_changed();
+  });
+
+  $("#straight_line").click(function() {
+    graph.set_current_tool("straight_line");
+    graph.draw_menu_changed();
+  });
+
+  $("#free_hand_line").click(function() {
+    graph.set_current_tool("free_hand_line");
+    graph.draw_menu_changed();
+  });
+
+  $("#circle").click(function() {
+    graph.set_current_tool("circle");
+    graph.draw_menu_changed();
+  });
+
+  $("#ellipse").click(function() {
+    graph.set_current_tool("ellipse");
+    graph.draw_menu_changed();
+  });
+
+  $("#rect").click(function() {
+    graph.set_current_tool("rect");
+    graph.draw_menu_changed();
+  });
+
+  $("#text").click(function() {
+    graph.set_current_tool("text");
+    graph.draw_menu_changed();
+  });
 
   $(".file").live('click', function() {
     var name = $(this).text();
