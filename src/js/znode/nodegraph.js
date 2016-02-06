@@ -20,6 +20,8 @@ function NodeGraph(){
   var shaky = new Shaky();
   var SHIFT = 16;
   var topHeight = $("#controls").height();
+  var CANVAS_LEFT_OFFSET = 30;
+  var FACTOR = 2.6;
 
   var paper_raphael = new Raphael("canvas_main", 0, topHeight, "100", "100");
 
@@ -80,7 +82,7 @@ function NodeGraph(){
   }
 
   function createConnection(a, conA, b, conB){
-      var link = paper.path("M 0 0 L 1 1");
+      var link = paper_raphael.path("M 0 0 L 1 1");
       link.attr({"stroke-width":2});
       link.parent = a[conA];
 
@@ -284,17 +286,14 @@ function NodeGraph(){
     };
 
     this.clear = function() {
-      var ctx = canvas_render.getContext('2d');
-      // shaky.clear2D(ctx, this.x() - 5, this.y() - 5, this.width() + 5, this.height() + 5);
       if (this.box != null) {
         this.box.clear();
       }
     };
 
     this.render = function() {
-      var ctx = canvas_render.getContext('2d');
       this.clear();
-      this.box = shaky.box2D(ctx, this.x() - canvas.position().left, this.y() - topHeight, this.width(), this.height());
+      this.box = shaky.box2D(this.x() - canvas.position().left, this.y() - topHeight, this.width(), this.height());
     };
 
     var nodeWidth = n.width();
@@ -406,14 +405,16 @@ function NodeGraph(){
       return point;
     };
 
-    function updateConnections(){
+    function updateConnections() {
+       curr.render();
        for (var i in curr.connections){
          var c = curr.connections[i];
-         if (!c.removed){
+         if (!c.removed) {
            var nodeA = c.startNode.connectionPos(c.startConnection);
            var nodeB = c.endNode.connectionPos(c.endConnection);
-           c.attr("path","M " + nodeA.x + " " + nodeA.y + " L " + nodeB.x + " " + nodeB.y);
-
+           var nodeAx = nodeA.x - FACTOR * CANVAS_LEFT_OFFSET;
+           var nodeBx = nodeB.x - FACTOR * CANVAS_LEFT_OFFSET;
+           c.attr("path","M " + nodeAx + " " + nodeA.y + " L " + nodeBx + " " + nodeB.y);
          }
        }
     }
@@ -426,19 +427,29 @@ function NodeGraph(){
       showOverlay();
       var link = paper_raphael.path("M 0 0 L 1 1");
       link.attr({"stroke-width":2});
+      link.arrow = shaky.lineWithArrow(0, 0, 1, 1);
       currentConnection = link;
       currentConnection.parent = $(this);
+
 
       curr.addConnection(link);
       var loc = $(this).position();
       var nLoc = n.position();
-      var x = loc.left + nLoc.left + 5;
-      x = nLoc.left + 5;
+      // var x = loc.left + nLoc.left + 5;
+      var x = nLoc.left - 0.95 * CANVAS_LEFT_OFFSET;
       var y = loc.top + nLoc.top - topHeight + 5;
       newNode = true;
 
+      var prevline = null;
       var id = setInterval(function(){
-        link.attr("path","M " + x + " " + y + " L " + mouseX + " " + mouseY);
+        endPtX = mouseX - FACTOR * CANVAS_LEFT_OFFSET;
+
+        // Update the rendering
+        if (prevline == null)
+          prevline = shaky.lineWithArrow(x, y, endPtX, mouseY);
+
+        prevline.moveTo(endPtX, mouseY);
+        link.attr("path","M " + x + " " + y + " L " + endPtX + " " + mouseY);
 
         pathEnd.x = mouseX;
         pathEnd.y = mouseY;
@@ -486,6 +497,7 @@ function NodeGraph(){
 
     bar.mousedown(function(e){
       currentNode = curr;
+      currentNode.clear();
       n.css("z-index", zindex++);
       e.preventDefault();
       startDrag(n, {left : 10, top: 40, right : win.width() - n.width() - 10, bottom : win.height() - n.height() - 10},
@@ -534,18 +546,17 @@ function NodeGraph(){
     defaultNode();
     currentConnection = null;
     currenNode = null;
-  }
+  };
 
   this.addNode = function(x, y, w, h, noDelete){
     var n = new Node(x, y, w, h, noDelete);
     n.render();
-  }
+  };
 
   var defaultWidth = 100;
   var defaultHeight = 50;
 
   this.addNodeAtMouse = function(){
-    //alert("Zevan");
     var current_node_width = defaultWidth;
     var current_node_height = defaultHeight;
     if (currentNode != null) {
@@ -558,7 +569,7 @@ function NodeGraph(){
     temp.render();
     currentNode = temp;
     currentConnection = null;
-  }
+  };
 
   function defaultNode(){
 
@@ -572,9 +583,8 @@ function NodeGraph(){
   // defaultNode();
 
   this.clear_and_render = function() {
-    var ctx = canvas_render.getContext('2d');
-    shaky.clear_canvas(ctx, canvas_render.width, canvas_render.height);
-  }
+    shaky.clear_canvas(canvas_render.width, canvas_render.height);
+  };
 
   this.fromJSON = function(data){
     clear();
@@ -589,7 +599,7 @@ function NodeGraph(){
       var c = data.connections[i];
       createConnection(nodes[c.nodeA], c.conA, nodes[c.nodeB], c.conB);
     }
-  }
+  };
 
   this.toJSON = function(){
     var json = '{"nodes" : [';

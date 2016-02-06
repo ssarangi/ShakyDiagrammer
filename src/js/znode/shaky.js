@@ -3,7 +3,7 @@ function Shaky() {
     ctx.clearRect(0, 0, width, height);
   };
 
-  this.Line = function(ctx, x0, y0, x1, y1) {
+  this.Line = function(x0, y0, x1, y1, stroke_width) {
     var dx = x1 - x0;
     var dy = y1 - y0;
 
@@ -22,14 +22,6 @@ function Shaky() {
     var x4 = x0 + dx * k2 - dy / length * l4;
     var y4 = y0 + dy * k2 + dx / length * l4;
 
-    //ctx.beginPath();
-    //ctx.moveTo(x0, y0);
-    //ctx.bezierCurveTo(x3, y3, x4, y4, x1, y1);
-    //
-    //// line color
-    //ctx.lineWidth = 4;
-    //ctx.strokeStyle = 'black';
-    //ctx.stroke();
     var path = new paper.Path();
     this.path = path;
 
@@ -39,26 +31,26 @@ function Shaky() {
 
     path.moveTo(new paper.Point(x0, y0));
     path.strokeColor = 'black';
-    path.strokeWidth = 4;
+    path.strokeWidth = stroke_width;
     path.cubicCurveTo(new paper.Point(x3, y3), new paper.Point(x4, y4), new paper.Point(x1, y1));
     path.simplify();
     paper.view.update();
     return this.path;
   };
 
-  this.text2D = function(ctx, txt, x, y) {
+  this.text2D = function(txt, x, y) {
     ctx.font = "15pt 'Gloria Hallelujah'";
     ctx.fillText(txt, x, y);
   };
 
-  this.box2D = function(ctx, top_x, top_y, width, height) {
+  this.box2D = function(top_x, top_y, width, height) {
     var bottom_x = top_x + width;
     var bottom_y = top_y + height;
 
-    this.l1 = this.Line(ctx, top_x, top_y, bottom_x, top_y);
-    this.l2 = this.Line(ctx, bottom_x, top_y, bottom_x, bottom_y);
-    this.l3 = this.Line(ctx, bottom_x, bottom_y, top_x, bottom_y);
-    this.l4 = this.Line(ctx, top_x, bottom_y, top_x, top_y);
+    this.l1 = this.Line(top_x, top_y, bottom_x, top_y, 4);
+    this.l2 = this.Line(bottom_x, top_y, bottom_x, bottom_y, 4);
+    this.l3 = this.Line(bottom_x, bottom_y, top_x, bottom_y, 4);
+    this.l4 = this.Line(top_x, bottom_y, top_x, top_y, 4);
 
     this.clear = function() {
       this.l1.remove();
@@ -69,6 +61,86 @@ function Shaky() {
     };
 
     this.group = new paper.Group([this.l1, this.l2, this.l3, this.l4]);
+    return this;
+  };
+
+  this.lineWithArrow = function(x1, y1, x2, y2) {
+    this.clear = function() {
+      this.group.remove();
+    };
+
+    var arrowArr = [
+      [ 2, 0 ],
+      [ -10, -6 ],
+      [ -10, 6]
+    ];
+
+    this.x1 = x1;
+    this.y1 = y1;
+    this.x2 = x2;
+    this.y2 = y2;
+    this.line_width = 2;
+
+    function drawFilledPolygon(shape) {
+      var path = new paper.Path();
+      path.moveTo(shape[0][0],shape[0][1]);
+
+      for(p in shape)
+        if (p > 0) path.lineTo(shape[p][0],shape[p][1]);
+
+      path.lineTo(shape[0][0],shape[0][1]);
+      path.fillColor = 'black';
+      return path;
+    }
+
+    function translateShape(shape,x,y) {
+      var rv = [];
+      for(p in shape)
+        rv.push([ shape[p][0] + x, shape[p][1] + y ]);
+      return rv;
+    }
+
+    function rotateShape(shape,ang)
+    {
+      var rv = [];
+      for(p in shape)
+        rv.push(rotatePoint(ang,shape[p][0],shape[p][1]));
+      return rv;
+    }
+
+    function rotatePoint(ang,x,y) {
+      return [
+        (x * Math.cos(ang)) - (y * Math.sin(ang)),
+        (x * Math.sin(ang)) + (y * Math.cos(ang))
+      ];
+    }
+
+    this.moveTo = function(x2, y2) {
+
+      if (this.path != null)
+        this.path.remove();
+
+      this.path = this.Line(this.x1, this.y1, x2, y2, this.line_width);
+
+      if (this.arrow_path != null)
+        this.arrow_path.remove();
+
+      var x1 = this.x1;
+      var y1 = this.y1;
+      var ang = Math.atan2(y2-y1,x2-x1);
+      this.arrow_path = drawFilledPolygon(translateShape(rotateShape(arrowArr,ang),x2,y2));
+      this.group = new paper.Group([this.l1, this.arrow_path]);
+      this.x2 = x2;
+      this.y2 = y2;
+      paper.view.update();
+    };
+
+    this.moveTo(x2, y2);
+    //this.l1 = this.Line(x1, y1, x2, y2, this.line_width);
+    //this.arrow_path = drawFilledPolygon(translateShape(rotateShape(arrowArr,ang),x2,y2));
+    //this.group = new paper.Group([this.l1, this.arrow_path]);
+    //paper.view.update();
+
     return this;
   };
 
