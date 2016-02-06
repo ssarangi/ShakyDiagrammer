@@ -87,12 +87,12 @@ function lineWithArrow(x1, y1, x2, y2) {
 
   this.moveTo = function(x2, y2) {
 
-    if (this.path != null)
-      this.path.clear();
+    if (this.group != null)
+      this.group.remove();
 
     paper.view.update();
     // Draw 2 circles
-    this.path = new this.Line(this.x1, this.y1, x2, y2, this.line_width);
+    this.line = new Line(this.x1, this.y1, x2, y2, this.line_width);
 
     if (this.arrow_path != null)
       this.arrow_path.remove();
@@ -101,7 +101,7 @@ function lineWithArrow(x1, y1, x2, y2) {
     var y1 = this.y1;
     var ang = Math.atan2(y2-y1,x2-x1);
     this.arrow_path = drawFilledPolygon(translateShape(rotateShape(arrowArr,ang),x2,y2));
-    this.group = new paper.Group([this.l1.path, this.arrow_path]);
+    this.group = new paper.Group([this.line.path, this.arrow_path]);
     this.x2 = x2;
     this.y2 = y2;
     paper.view.update();
@@ -120,10 +120,10 @@ function box2D(top_x, top_y, width, height) {
   var bottom_x = top_x + width;
   var bottom_y = top_y + height;
 
-  this.l1 = new this.Line(top_x, top_y, bottom_x, top_y, 4);
-  this.l2 = new this.Line(bottom_x, top_y, bottom_x, bottom_y, 4);
-  this.l3 = new this.Line(bottom_x, bottom_y, top_x, bottom_y, 4);
-  this.l4 = new this.Line(top_x, bottom_y, top_x, top_y, 4);
+  this.l1 = new Line(top_x, top_y, bottom_x, top_y, 4);
+  this.l2 = new Line(bottom_x, top_y, bottom_x, bottom_y, 4);
+  this.l3 = new Line(bottom_x, bottom_y, top_x, bottom_y, 4);
+  this.l4 = new Line(top_x, bottom_y, top_x, top_y, 4);
 
   this.clear = function() {
     this.l1.clear();
@@ -142,7 +142,6 @@ function Shaky() {
     ctx.clearRect(0, 0, width, height);
   };
 
-  this.Line = Line;
   this.box2D = box2D;
   this.lineWithArrow = lineWithArrow;
 

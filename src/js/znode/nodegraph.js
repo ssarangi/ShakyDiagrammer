@@ -293,7 +293,7 @@ function NodeGraph(){
 
     this.render = function() {
       this.clear();
-      this.box = shaky.box2D(this.x() - canvas.position().left, this.y() - topHeight, this.width(), this.height());
+      this.box = new shaky.box2D(this.x() - canvas.position().left, this.y() - topHeight, this.width(), this.height());
     };
 
     var nodeWidth = n.width();
