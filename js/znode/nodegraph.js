@@ -29,6 +29,12 @@ function NodeGraph(){
   var paper_raphael = new Raphael("canvas_main", 0, topHeight, "100", "100");
 
   this.set_current_tool = function(tool) {
+    if (tool == "select_mode") {
+      shaky.selection_mode = true;
+    }
+    else {
+      shaky.selection_mode = false;
+    }
     current_tool = tool;
   };
 
@@ -136,7 +142,7 @@ function NodeGraph(){
   }
 
   canvas.mousedown(function(e){
-    if (menu.css("display") == "block"){
+    if (menu.css("display") == "block") {
       if (e.target.tagName != "LI"){
         menu.hide();
         currentConnection.remove();
@@ -144,7 +150,7 @@ function NodeGraph(){
     }
   });
 
-  $(document).keydown(function(e){
+  $(document).keydown(function(e) {
     key[e.keyCode] = true;
   }).keyup(function(e){
     key[e.keyCode] = false;
@@ -231,7 +237,7 @@ function NodeGraph(){
 
   function showOverlay(){
     overlay.show();
-    overlay.css({"width" : win.width(), "height" : win.height()}); //, "opacity": 0.1});
+    overlay.css({"width" : win.width(), "height" : win.height()});
   }
 
   function startDrag(element, bounds, dragCallback){
@@ -589,9 +595,9 @@ function NodeGraph(){
 
   this.clearAll = function(){
     clear();
-    defaultNode();
+    shaky.clear_all();
     currentConnection = null;
-    currenNode = null;
+    currentNode = null;
   };
 
   this.addNode = function(x, y, w, h, noDelete){

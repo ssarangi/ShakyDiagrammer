@@ -121,8 +121,9 @@ function lineWithArrow(x1, y1, x2, y2) {
     this.group.obj_parent = this;
 
     this.group.onMouseDown = function(event) {
+      if (this.obj_parent.ctx.selection_mode == false)
+        return false;
       this.selected = true;
-      this.obj_parent.ctx.selection_mode = true;
       this.obj_parent.selected = true;
     };
 
@@ -153,6 +154,13 @@ function box2D(top_x, top_y, width, height) {
   this.group = new paper.Group([this.l1.path, this.l2.path, this.l3.path, this.l4.path]);
   this.group.obj_parent = this;
 
+  this.group.onMouseDown = function(event) {
+    if (this.obj_parent.ctx.selection_mode == false)
+      return false;
+    this.selected = true;
+    this.obj_parent.selected = true;
+  };
+
   return this;
 }
 
@@ -178,8 +186,9 @@ function Circle(x, y) {
     paper.view.update();
 
     this.path.onMouseDown = function(event) {
+      if (this.obj_parent.ctx.selection_mode == false)
+        return false;
       this.selected = true;
-      this.obj_parent.ctx.selection_mode = true;
       this.obj_parent.selected = true;
     }
   };
@@ -210,8 +219,9 @@ function Ellipse(x, y) {
     this.path.obj_parent = this;
 
     this.path.onMouseDown = function(event) {
+      if (this.obj_parent.ctx.selection_mode == false)
+        return false;
       this.selected = true;
-      this.obj_parent.ctx.selection_mode = true;
       this.obj_parent.selected = true;
     };
 
@@ -250,8 +260,9 @@ function ShakyRect(x1, y1) {
     this.group.obj_parent = this;
 
     this.group.onMouseDown = function(event) {
+      if (this.obj_parent.ctx.selection_mode == false)
+        return false;
       this.selected = true;
-      this.obj_parent.ctx.selection_mode = true;
       this.obj_parent.selected = true;
     };
     paper.view.update();
@@ -285,8 +296,9 @@ function RoundedRect(x1, y1) {
     this.path.obj_parent = this;
 
     this.path.onMouseDown = function(event) {
+      if (this.obj_parent.ctx.selection_mode == false)
+        return false;
       this.selected = true;
-      this.obj_parent.ctx.selection_mode = true;
       this.obj_parent.selected = true;
     };
 
@@ -305,8 +317,9 @@ function FreeHandLine(x, y) {
   this.path.obj_parent = this;
 
   this.path.onMouseDown = function(event) {
+    if (this.obj_parent.ctx.selection_mode == false)
+      return false;
     this.selected = true;
-    this.obj_parent.ctx.selection_mode = true;
     this.obj_parent.selected = true;
   };
 
@@ -347,8 +360,9 @@ function ShakyLine(x, y) {
     this.path.obj_parent = this;
 
     this.path.onMouseDown = function(event) {
+      if (this.obj_parent.ctx.selection_mode == false)
+        return false;
       this.selected = true;
-      this.obj_parent.ctx.selection_mode = true;
       this.obj_parent.selected = true;
     };
 
@@ -374,8 +388,9 @@ function StraightLine(x, y) {
   this.path.obj_parent = this;
 
   this.path.onMouseDown = function(event) {
+    if (this.obj_parent.ctx.selection_mode == false)
+      return false;
     this.selected = true;
-    this.obj_parent.ctx.selection_mode = true;
     this.obj_parent.selected = true;
   };
 
@@ -408,8 +423,9 @@ function Text2D(x, y, txt) {
   this.text.obj_parent = this;
 
   this.text.onMouseDown = function(event) {
+    if (this.obj_parent.ctx.selection_mode == false)
+      return false;
     this.selected = true;
-    this.obj_parent.ctx.selection_mode = true;
     this.obj_parent.selected = true;
   };
 
@@ -609,5 +625,10 @@ function Shaky() {
     }
 
     self.selection_mode = false;
+  }
+
+  this.clear_all = function() {
+    paper.project.activeLayer.removeChildren();
+    paper.view.update();
   }
 }
