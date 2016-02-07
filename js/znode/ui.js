@@ -150,6 +150,12 @@ $(function(){
     graph.draw_menu_changed();
   });
 
+  $("#free_hand_line_with_arr").click(function() {
+    make_menu_active("#free_hand_line_with_arr");
+    graph.set_current_tool("free_hand_line_with_arr");
+    graph.draw_menu_changed();
+  });
+
   $("#arrow").click(function() {
     make_menu_active("#arrow");
     graph.set_current_tool("arrow");

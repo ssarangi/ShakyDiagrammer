@@ -753,7 +753,10 @@ function NodeGraph(){
       shaky.update_eraser(eraser);
     }
     else if (current_tool == "free_hand_line") {
-      free_hand_line = new shaky.freeHandLine(pos.x, pos.y);
+      free_hand_line = new shaky.freeHandLine(pos.x, pos.y, false);
+    }
+    else if (current_tool == "free_hand_line_with_arr") {
+      free_hand_line = new shaky.freeHandLine(pos.x, pos.y, true);
     }
     else if (current_tool == "shaky_line") {
       shaky_line = new shaky.shakyLine(pos.x, pos.y);
@@ -805,7 +808,7 @@ function NodeGraph(){
         eraser = new shaky.eraser(pos.x, pos.y);
         shaky.update_eraser(eraser);
       }
-      else if (current_tool == "free_hand_line") {
+      else if (current_tool == "free_hand_line" || current_tool == "free_hand_line_with_arr") {
         free_hand_line.add_point(pos.x, pos.y);
       }
       else if (current_tool == "shaky_line") {
@@ -845,7 +848,7 @@ function NodeGraph(){
     if (event.which === 1)
       left_button_down = false;
 
-    if (current_tool == "free_hand_line") {
+    if (current_tool == "free_hand_line" || current_tool == "free_hand_line_with_arr") {
       free_hand_line.finalize();
     }
   }

@@ -69,39 +69,12 @@ function Line(x0, y0, x1, y1, stroke_width) {
   return this;
 }
 
-function lineWithArrow(x1, y1, x2, y2) {
-  this.clear = function() {
-    this.group.remove();
-    paper.view.update();
-  };
-
-  this.translateBy = function(delta) {
-    this.group.position.x += delta.x;
-    this.group.position.y += delta.y;
-  };
-
-  this.selected = function() {
-    if (this.group.selected)
-      return true;
-
-    return false;
-  };
-
-  this.deselect = function() {
-    this.group.selected = false;
-  };
-
+function Arrow(x1, y1, x2, y2) {
   var arrowArr = [
     [ 2, 0 ],
     [ -10, -6 ],
     [ -10, 6]
   ];
-
-  this.x1 = x1;
-  this.y1 = y1;
-  this.x2 = x2;
-  this.y2 = y2;
-  this.line_width = 2;
 
   function drawFilledPolygon(shape) {
     var path = new paper.Path();
@@ -137,6 +110,39 @@ function lineWithArrow(x1, y1, x2, y2) {
     ];
   }
 
+  var ang = Math.atan2(y2-y1,x2-x1);
+  this.path = drawFilledPolygon(translateShape(rotateShape(arrowArr,ang),x2,y2));
+  return this.path;
+}
+
+function lineWithArrow(x1, y1, x2, y2) {
+  this.clear = function() {
+    this.group.remove();
+    paper.view.update();
+  };
+
+  this.translateBy = function(delta) {
+    this.group.position.x += delta.x;
+    this.group.position.y += delta.y;
+  };
+
+  this.selected = function() {
+    if (this.group.selected)
+      return true;
+
+    return false;
+  };
+
+  this.deselect = function() {
+    this.group.selected = false;
+  };
+
+  this.x1 = x1;
+  this.y1 = y1;
+  this.x2 = x2;
+  this.y2 = y2;
+  this.line_width = 2;
+
   this.clear = function() {
     if (this.group != null) {
       this.group.remove();
@@ -164,7 +170,8 @@ function lineWithArrow(x1, y1, x2, y2) {
     var x1 = this.x1;
     var y1 = this.y1;
     var ang = Math.atan2(y2-y1,x2-x1);
-    this.arrow_path = drawFilledPolygon(translateShape(rotateShape(arrowArr,ang),x2,y2));
+    // this.arrow_path = drawFilledPolygon(translateShape(rotateShape(arrowArr,ang),x2,y2));
+    this.arrow_path = new Arrow(x1, y1, x2, y2);
     this.group = new paper.Group([this.line.path, this.circle_start_pt, this.arrow_path]);
     this.x2 = x2;
     this.y2 = y2;
@@ -440,47 +447,58 @@ function RoundedRect(x1, y1) {
   return this;
 }
 
-function FreeHandLine(x, y) {
+function FreeHandLine(x, y, draw_arrow) {
   this.path = new paper.Path();
   this.path.strokeColor = 'black';
-  this.path.strokeWidth = 2;
+  this.path.strokeWidth = 3;
   this.path.setFullySelected();
+  this.last_pt = new paper.Point(x, y);
+  this.last_but_one_pt = null;
+  this.draw_arrow = draw_arrow;
 
-  this.path.obj_parent = this;
+  this.group = new paper.Group([this.path]);
+  this.group.obj_parent = this;
 
-  this.path.onMouseDown = function(event) {
+  this.group.onMouseDown = function(event) {
     if (this.obj_parent.ctx.selection_mode == false)
       return false;
     this.selected = !this.selected;
   };
 
   this.selected = function() {
-    if (this.path.selected)
+    if (this.group.selected)
       return true;
 
     return false;
   };
 
   this.deselect = function() {
-    this.path.selected = false;
+    this.group.selected = false;
   };
 
   this.translateBy = function(delta) {
-    this.path.position.x += delta.x;
-    this.path.position.y += delta.y;
+    this.group.position.x += delta.x;
+    this.group.position.y += delta.y;
   };
 
   this.clear = function() {
-    this.path.remove();
+    this.group.remove();
     paper.view.update();
   };
 
   this.add_point = function(x, y) {
     this.path.add(x, y);
+    this.last_but_one_pt = this.last_pt;
+    this.last_pt = new paper.Point(x, y);
   };
 
   this.finalize = function() {
     this.path.simplify();
+
+    if (this.draw_arrow == true) {
+      this.arr_path = Arrow(this.last_but_one_pt.x, this.last_but_one_pt.y, this.last_pt.x, this.last_pt.y);
+      this.group.addChild(this.arr_path);
+    }
   };
 
   return this;
@@ -723,8 +741,8 @@ function Shaky(canvas) {
     return e;
   };
 
-  this.freeHandLine = function(x, y) {
-    var fh = new FreeHandLine(x, y);
+  this.freeHandLine = function(x, y, draw_arrow) {
+    var fh = new FreeHandLine(x, y, draw_arrow);
     fh.ctx = self;
     self.diagrams.push(fh);
     return fh;
