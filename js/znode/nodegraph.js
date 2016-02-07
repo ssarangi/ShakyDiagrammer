@@ -129,11 +129,9 @@ function NodeGraph(){
     }).mouseleave(function(){
       this.raphael.attr("stroke","#000000");
     }).click(function(){
-      if (confirm("Are you sure you want to delete this connection?")){
-        this.raphael.arrow.clear();
-        this.raphael.remove();
-        delete connections[this.raphael.id];
-      }
+      this.raphael.arrow.clear();
+      this.raphael.remove();
+      delete connections[this.raphael.id];
     });
   }
 
@@ -337,9 +335,8 @@ function NodeGraph(){
         ex.css("color","white");
       }).click(function(){
 
-        if (confirm("Are you sure you want to delete this node?")){
-          curr.remove();
-        }
+        curr.clear();
+        curr.remove();
       });
     }
 
@@ -612,8 +609,8 @@ function NodeGraph(){
       current_node_width = currentNode.width();
       current_node_height = currentNode.height();
     }
-    var w = current_node_width;
-    var h = current_node_height;
+    var w = current_node_width > 0 ? current_node_width : defaultWidth;
+    var h = current_node_height > 0 ? current_node_height : defaultHeight;
     var temp = new Node(mouseX, mouseY + 30, w, h);
     temp.render();
     currentNode = temp;
