@@ -689,7 +689,7 @@ function NodeGraph(){
   canvas_render.addEventListener("mouseup", canvasrender_onMouseUp, false);
   canvas_render.addEventListener("mousemove", canvasrender_onMouseDrag, false);
   canvas_render.addEventListener("onfocusout", canvasrender_onFocusOut, false);
-  canvas_render.addEventListener("keydown", canvasrender_onKeyPress, true);
+  // canvas_render.addEventListener("keydown", canvasrender_onKeyPress, true);
 
   var left_button_down = false;
   var free_hand_line = null;
@@ -746,7 +746,6 @@ function NodeGraph(){
     }
     else if (current_tool == "arrow") {
       arrow = new shaky.lineWithArrow(pos.x, pos.y, pos.x, pos.y);
-      console.log("Came to arrow");
     }
     else if (current_tool == "circle") {
       circle = new shaky.circle(pos.x, pos.y);
@@ -761,10 +760,10 @@ function NodeGraph(){
       rect = new shaky.roundedRect(pos.x, pos.y);
     }
     else if (current_tool == "text") {
-      // var userInput = prompt('Enter Text:');
-      // if (userInput != null) {
+      var userInput = prompt('Enter Text:');
+      if (userInput != null) {
         txt = new shaky.text2D(pos.x, pos.y, "");
-      // }
+      }
     }
     else if (current_tool == "select") {
       // Do not do anything.
