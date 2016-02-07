@@ -848,9 +848,17 @@ function NodeGraph(){
       shaky.selection_mode = false;
     }
     else if (current_tool == "text") {
-      is_shift_pressed = event.shiftKey;
-      var shift_val = is_shift_pressed ? 0: 32;
-      var chCode = String.fromCharCode(event.keyCode + shift_val);
+      var chCode = "";
+      if (event.keyCode == 32)
+        chCode = " ";
+      else if (event.keyCode == 8) {
+        txt.remove_char();
+      }
+      else {
+        is_shift_pressed = event.shiftKey;
+        var shift_val = is_shift_pressed ? 0 : 32;
+        chCode = String.fromCharCode(event.keyCode + shift_val);
+      }
       txt.add_char(chCode);
     }
   }

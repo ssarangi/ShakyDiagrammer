@@ -423,6 +423,10 @@ function Text2D(x, y, txt) {
     paper.view.update();
   };
 
+  this.remove_char = function() {
+    this.text_context  = this.text_context.slice(0, -1);
+  };
+
   paper.view.update();
   return this;
 }
@@ -490,7 +494,7 @@ function Shaky() {
     return c;
   };
 
-  this.box2d = function(x, y, width, height) {
+  this.box2D = function(x, y, width, height) {
     var b2d = new box2D(x, y, width, height);
     b2d.ctx = self;
     self.diagrams.push(b2d);
