@@ -32,6 +32,14 @@ function NodeGraph(){
     current_tool = tool;
   };
 
+  this.save_image = function(name) {
+    shaky.remove_eraser();
+    paper.view.draw();
+    var img = canvas_render.toDataURL();
+    download(img, name + ".png", "image/png");
+    shaky.create_new_eraser();
+  };
+
   function resizePaper() {
       paper_raphael.setSize(win.width() / 2, win.height() - topHeight);
       canvas_render.width = win.width() / 2;

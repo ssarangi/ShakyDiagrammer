@@ -582,6 +582,15 @@ function Shaky() {
     this.current_eraser.erase("render");
   };
 
+  this.remove_eraser = function() {
+    if (this.current_eraser != null)
+      this.current_eraser.clear();
+  };
+
+  this.create_new_eraser = function() {
+    this.current_eraser = new shaky.eraser(0, 0);
+  };
+
   this.remove_selected = function() {
     var to_be_removed = [];
     for (counter in self.diagrams) {

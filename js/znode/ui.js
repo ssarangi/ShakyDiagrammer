@@ -49,6 +49,8 @@ $(function(){
 
     var json = paper.project.exportJSON();
     download(json, name + ".json", "text/json");
+    // paper.view.toBlob(function(blob) { saveAs(blob, name + ".png");});
+    graph.save_image(name);
   }
 
   $("#canvas_main").mousedown(function(){
