@@ -700,7 +700,7 @@ function NodeGraph(){
   canvas_render.addEventListener("mouseup", canvasrender_onMouseUp, false);
   canvas_render.addEventListener("mousemove", canvasrender_onMouseDrag, false);
   canvas_render.addEventListener("onfocusout", canvasrender_onFocusOut, false);
-  // canvas_render.addEventListener("keydown", canvasrender_onKeyPress, true);
+  canvas_render.addEventListener("keydown", canvasrender_onKeyPress, true);
 
   var left_button_down = false;
   var free_hand_line = null;
@@ -857,19 +857,19 @@ function NodeGraph(){
     else if (event.keyCode == 27) {
       shaky.selection_mode = false;
     }
-    else if (current_tool == "text") {
-      var chCode = "";
-      if (event.keyCode == 32)
-        chCode = " ";
-      else if (event.keyCode == 8) {
-        txt.remove_char();
-      }
-      else {
-        is_shift_pressed = event.shiftKey;
-        var shift_val = is_shift_pressed ? 0 : 32;
-        chCode = String.fromCharCode(event.keyCode + shift_val);
-      }
-      txt.add_char(chCode);
-    }
+    //else if (current_tool == "text") {
+    //  var chCode = "";
+    //  if (event.keyCode == 32)
+    //    chCode = " ";
+    //  else if (event.keyCode == 8) {
+    //    txt.remove_char();
+    //  }
+    //  else {
+    //    is_shift_pressed = event.shiftKey;
+    //    var shift_val = is_shift_pressed ? 0 : 32;
+    //    chCode = String.fromCharCode(event.keyCode + shift_val);
+    //  }
+    //  txt.add_char(chCode);
+    //}
   }
 }

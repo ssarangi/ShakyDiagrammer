@@ -607,27 +607,47 @@ function Shaky() {
     this.current_eraser = new Eraser(0, 0);
   };
 
+  //this.remove_selected_old = function() {
+  //  var to_be_removed = [];
+  //  for (counter in self.diagrams) {
+  //    var diagram = self.diagrams[counter];
+  //    if (diagram.selected) {
+  //      diagram.clear();
+  //      to_be_removed.push(diagram);
+  //    }
+  //  }
+  //
+  //  for (counter in to_be_removed) {
+  //    var diagram = to_be_removed[counter];
+  //    var index = self.diagrams.indexOf(diagram);
+  //    if (index > -1)
+  //      self.diagrams.splice(index, 1);
+  //  }
+  //
+  //  self.selection_mode = false;
+  //};
+
   this.remove_selected = function() {
-    var to_be_removed = [];
-    for (counter in self.diagrams) {
-      var diagram = self.diagrams[counter];
-      if (diagram.selected) {
-        diagram.clear();
-        to_be_removed.push(diagram);
-      }
+    var children = paper.project.activeLayer.children;
+
+    var to_be_deleted = []
+    // Iterate through the items contained within the array:
+    for (var i = 0; i < children.length; i++) {
+      var child = children[i];
+      if (child.isSelected())
+        to_be_deleted.push(child);
     }
 
-    for (counter in to_be_removed) {
-      var diagram = to_be_removed[counter];
-      var index = self.diagrams.indexOf(diagram);
-      if (index > -1)
-        self.diagrams.splice(index, 1);
+    for (i = 0; i < to_be_deleted.length; i++) {
+      child = to_be_deleted[i];
+      child.remove();
     }
 
-    self.selection_mode = false;
-  }
+    paper.view.update();
+  };
 
   this.clear_all = function() {
+    this.diagrams = [];
     paper.project.activeLayer.removeChildren();
     paper.view.update();
   }
