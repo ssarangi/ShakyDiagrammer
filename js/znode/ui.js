@@ -34,7 +34,7 @@ $(function(){
     graph.clearAll();
   });
   $("#help").click(function(){
-    window.open("http://www.zreference.com/znode", "_blank");
+    window.open("http://github.com/ssarangi/ShakyDiagrammer", "_blank");
   });
 
   $("#save").click(saveFile);
@@ -46,20 +46,52 @@ $(function(){
       filename[0].focus();
       return;
     }
-    $.post("json/save.php", {data:graph.toJSON(), name:name}, function(data){
-      alert("Your file was saved.");
-    });
+
+    var json = paper.project.exportJSON();
+    download(json, name + ".json", "text/json");
   }
 
   $("#canvas_main").mousedown(function(){
     openWin.fadeOut();
   });
 
+
   $("#open").click(function(){
-    var fileList =  $("#files");
-    fileList.html("<div>loading...<\/div>");
-    openWin.fadeIn();
-    fileList.load("json/files.php?"+Math.random()*1000000);
+    //var fileList =  $("#files");
+    //fileList.html("<div>loading...<\/div>");
+    //openWin.fadeIn();
+    //fileList.load("json/files.php?"+Math.random()*1000000);
+    // Check for the various File API support.
+    if (window.File && window.FileReader && window.FileList && window.Blob) {
+      // var input = $(document.createElement('input'))[0];
+      var input = document.createElement("input");
+      input.setAttribute("type", "file");
+      input.setAttribute("id", "fileinput");
+      input.addEventListener("change", function() {
+        var input, file, fr;
+        input = this;
+
+        if (input && input.files && input.files[0]) {
+          file = input.files[0];
+          fr = new FileReader();
+          fr.onload = function(e) {
+            var jsonFile = e.target;
+            var json = jsonFile.result;
+
+            alert("Some functionality will be buggy with file loading");
+            // Import the file into paper.
+            paper.project.importJSON(json);
+            paper.view.update();
+          };
+          fr.readAsText(file);
+        }
+      });
+      input.click();
+      // Great success! All the File APIs are supported.
+    } else {
+      alert('The File APIs are not fully supported in this browser.');
+    }
+    return true;
   });
 
   var nameMessage = "Enter your file name";
