@@ -67,7 +67,7 @@ function NodeGraph(){
   hitConnect.css({"position" : "absolute", "left" : 100, "top" : 0, "z-index" : 4000, "border" : "none",
                   "width" : 10, "height": 10, "cursor":"pointer", "font-size": "1px"});
 
-  $("#menu li").hover(function(){
+  $("#menu li").hover(function() {
     $(this).css("background-color", "#cccccc");
   },
   function(){
@@ -642,7 +642,7 @@ function NodeGraph(){
     clear();
     for (var i in data.nodes){
       var n = data.nodes[i];
-      var ex = (i == "0") ? true : false;
+      var ex = (i == "0");
       var temp = new Node(n.x, n.y, n.width, n.height, ex, n.id);
       var addreturns = n.txt.replace(/\\n/g,'\n');
       temp.txt.val(addreturns);
@@ -725,23 +725,24 @@ function NodeGraph(){
     shaky.refresh_canvas();
   };
 
-  function getMousePos(canvas, evt) {
+  function getMousePos(canvas, event) {
     var rect = canvas.getBoundingClientRect();
     return {
-      x: evt.clientX - rect.left,
-      y: evt.clientY - rect.top
+      x: event.clientX - rect.left,
+      y: event.clientY - rect.top
     };
   }
 
   function canvasrender_onMouseDown(event) {
     if (event.which === 1)
       left_button_down = true;
+    pos = getMousePos(canvas_render, event);
 
     if (shaky.selection_mode == true) {
+      shaky.checkHit(event, pos.x, pos.y);
       return;
     }
 
-    pos = getMousePos(canvas_render, event);
     if (current_tool == "eraser") {
       var eraser = new shaky.eraser(pos.x, pos.y);
       shaky.update_eraser(eraser);

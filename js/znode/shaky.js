@@ -1,3 +1,32 @@
+function getPts(x0, y0, x1, y1) {
+  var dx = x1 - x0;
+  var dy = y1 - y0;
+
+  var length = Math.sqrt(dx * dx + dy * dy);
+
+  var k = Math.sqrt(length) / 1.5;
+
+  var k1 = Math.random();
+  var k2 = Math.random();
+  var l3 = Math.random() * k;
+  var l4 = Math.random() * k;
+
+  var x3 = x0 + dx * k1 + dy / length * l3;
+  var y3 = y0 + dy * k1 - dx / length * l3;
+
+  var x4 = x0 + dx * k2 - dy / length * l4;
+  var y4 = y0 + dy * k2 + dx / length * l4;
+
+  var p1 = new paper.Point(x0, y0);
+
+  var p2 = new paper.Point(x3, y3);
+
+  var p3 = new paper.Point(x4, y4);
+
+  var p4 = new paper.Point(x1, y1);
+  return [p1, p2, p3, p4];
+}
+
 function Line(x0, y0, x1, y1, stroke_width) {
   this.clear = function() {
     if (this.path != null)
@@ -256,6 +285,7 @@ function ShakyRect(x1, y1) {
     this.l2 = new Line(bottom_x, top_y, bottom_x, bottom_y, 4);
     this.l3 = new Line(bottom_x, bottom_y, top_x, bottom_y, 4);
     this.l4 = new Line(top_x, bottom_y, top_x, top_y, 4);
+
     this.group = new paper.Group([this.l1.path, this.l2.path, this.l3.path, this.l4.path]);
     this.group.obj_parent = this;
 
@@ -650,5 +680,45 @@ function Shaky() {
     this.diagrams = [];
     paper.project.activeLayer.removeChildren();
     paper.view.update();
+  };
+
+  this.checkHit = function(event, x, y) {
+    var hitOptions = {
+      segments: true,
+      stroke: false,
+      fill: true,
+      tolerance: 20
+    };
+
+    segment = path = null;
+    var p = new paper.Point(x, y);
+    var hitResult = paper.project.hitTest(p, hitOptions);
+    if (!hitResult)
+      return;
+
+    if (event.shiftKey) {
+      if (hitResult.type == 'segment') {
+        hitResult.segment.remove();
+      }
+      return;
+    }
+
+    if (hitResult) {
+      path = hitResult.item;
+      if (hitResult.type == 'segment') {
+        segment = hitResult.segment;
+      } else if (hitResult.type == 'stroke') {
+        var location = hitResult.location;
+        segment = path.insert(location.index + 1, p);
+        path.smooth();
+      }
+    }
+    movePath = hitResult.type == 'fill';
+    if (movePath)
+      project.activeLayer.addChild(hitResult.item);
+  };
+
+  this.drag = function(event, x, y) {
+    console.log("Dragging objects");
   }
 }
