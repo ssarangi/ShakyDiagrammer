@@ -190,8 +190,8 @@ function lineWithArrow(x1, y1, x2, y2) {
   return this;
 }
 
-function box2D(top_x, top_yidth, height) {
-  var bottom_x = top_x + wi;
+function box2D(top_x, top_y, width, height) {
+  var bottom_x = top_x + width;
   var bottom_y = top_y + height;
 
   this.l1 = new Line(top_x, top_y, bottom_x, top_y, 4);
