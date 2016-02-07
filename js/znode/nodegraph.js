@@ -264,7 +264,6 @@ function NodeGraph(){
     loops.push(id);
   }
 
-
   function Node(xp, yp, w, h, noDelete, forceId){
 
     if (forceId){
@@ -314,11 +313,25 @@ function NodeGraph(){
       if (this.box != null) {
         this.box.clear();
       }
+
+      if (this.text != null) {
+        this.text.clear();
+      }
     };
 
     this.render = function() {
       this.clear();
       this.box = new shaky.box2D(this.x() - canvas.position().left, this.y() - topHeight, this.width(), this.height());
+
+      if (this.text != null)
+        this.updateText(this.text.value);
+    };
+
+    this.updateText = function(value) {
+      if (this.text != null)
+        this.text.clear();
+      this.text = new shaky.text2D(this.x() + 4, this.y() - 10, value);
+      this.text.value = value;
     };
 
     var nodeWidth = n.width();
@@ -359,6 +372,11 @@ function NodeGraph(){
              "resize" : "none", "overflow" : "hidden",
              "font-size" : "12px" , "font-family" : "sans-serif",
              "border" : "none","z-index":4});
+
+    var self = this;
+    txt.keyup(function() {
+      self.updateText(this.value);
+    });
 
     this.txt = txt;
 
@@ -782,7 +800,7 @@ function NodeGraph(){
     else if (current_tool == "text") {
       var userInput = prompt('Enter Text:');
       if (userInput != null) {
-        txt = new shaky.text2D(pos.x, pos.y, "");
+        txt = new shaky.text2D(pos.x, pos.y, userInput);
       }
     }
     else if (current_tool == "select") {

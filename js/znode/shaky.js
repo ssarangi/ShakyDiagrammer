@@ -776,8 +776,8 @@ function Shaky(canvas) {
     return el;
   };
 
-  this.text2D = function(x, y) {
-    var t2d = new Text2D(x, y, "");
+  this.text2D = function(x, y, txt) {
+    var t2d = new Text2D(x, y, txt);
     t2d.ctx = self;
     self.diagrams.push(t2d);
     return t2d;
