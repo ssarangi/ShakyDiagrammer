@@ -588,7 +588,7 @@ function Shaky() {
   };
 
   this.create_new_eraser = function() {
-    this.current_eraser = new shaky.eraser(0, 0);
+    this.current_eraser = new Eraser(0, 0);
   };
 
   this.remove_selected = function() {
