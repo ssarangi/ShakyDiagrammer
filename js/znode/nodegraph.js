@@ -17,7 +17,7 @@ function NodeGraph(){
   var zindex = 1;
   var hitConnect;
   var key = {};
-  var shaky = new Shaky();
+  var shaky = new Shaky(canvas_render);
   var SHIFT = 16;
   var topHeight = $("#controls").height();
   //var CANVAS_LEFT_OFFSET = 30;
@@ -25,17 +25,21 @@ function NodeGraph(){
   var CANVAS_LEFT_OFFSET = 0;
   var FACTOR = 0;
   var current_tool = "eraser";
+  var prev_tool = "";
 
   var paper_raphael = new Raphael("canvas_main", 0, topHeight, "100", "100");
 
   this.set_current_tool = function(tool) {
+    prev_tool = current_tool;
+    current_tool = tool;
     if (tool == "select_mode") {
       shaky.selection_mode = true;
     }
     else {
+      if (prev_tool == "select_mode")
+        shaky.deselect_all();
       shaky.selection_mode = false;
     }
-    current_tool = tool;
   };
 
   this.save_image = function(name) {
@@ -737,9 +741,10 @@ function NodeGraph(){
     if (event.which === 1)
       left_button_down = true;
     pos = getMousePos(canvas_render, event);
+    shaky.drag.x = pos.x;
+    shaky.drag.y = pos.y;
 
     if (shaky.selection_mode == true) {
-      shaky.checkHit(event, pos.x, pos.y);
       return;
     }
 
@@ -783,10 +788,6 @@ function NodeGraph(){
   }
 
   function canvasrender_onMouseDrag(event) {
-    if (shaky.selection_mode == true) {
-      return;
-    }
-
     pos = getMousePos(canvas_render, event);
 
     var dragging = false;
@@ -796,7 +797,11 @@ function NodeGraph(){
     }
 
     if (dragging) {
-      if (current_tool == "eraser") {
+      if (shaky.selection_mode == true) {
+        shaky.drag(pos.x, pos.y);
+        return;
+      }
+      else if (current_tool == "eraser") {
         eraser = new shaky.eraser(pos.x, pos.y);
         shaky.update_eraser(eraser);
       }
@@ -856,7 +861,7 @@ function NodeGraph(){
       shaky.remove_selected();
     }
     else if (event.keyCode == 27) {
-      shaky.selection_mode = false;
+      shaky.deselect_all();
     }
     //else if (current_tool == "text") {
     //  var chCode = "";

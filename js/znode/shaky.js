@@ -34,6 +34,11 @@ function Line(x0, y0, x1, y1, stroke_width) {
       paper.view.update();
   };
 
+  this.translateBy = function(delta) {
+    this.path.position.x += delta.x;
+    this.path.position.y += delta.y;
+  };
+
   var dx = x1 - x0;
   var dy = y1 - y0;
 
@@ -68,6 +73,22 @@ function lineWithArrow(x1, y1, x2, y2) {
   this.clear = function() {
     this.group.remove();
     paper.view.update();
+  };
+
+  this.translateBy = function(delta) {
+    this.group.position.x += delta.x;
+    this.group.position.y += delta.y;
+  };
+
+  this.selected = function() {
+    if (this.group.selected)
+      return true;
+
+    return false;
+  };
+
+  this.deselect = function() {
+    this.group.selected = false;
   };
 
   var arrowArr = [
@@ -152,8 +173,7 @@ function lineWithArrow(x1, y1, x2, y2) {
     this.group.onMouseDown = function(event) {
       if (this.obj_parent.ctx.selection_mode == false)
         return false;
-      this.selected = true;
-      this.obj_parent.selected = true;
+      this.selected = !this.selected;
     };
 
     paper.view.update();
@@ -163,8 +183,8 @@ function lineWithArrow(x1, y1, x2, y2) {
   return this;
 }
 
-function box2D(top_x, top_y, width, height) {
-  var bottom_x = top_x + width;
+function box2D(top_x, top_yidth, height) {
+  var bottom_x = top_x + wi;
   var bottom_y = top_y + height;
 
   this.l1 = new Line(top_x, top_y, bottom_x, top_y, 4);
@@ -180,14 +200,29 @@ function box2D(top_x, top_y, width, height) {
     this.group.remove();
   };
 
+  this.selected = function() {
+    if (this.path.selected)
+      return true;
+
+    return false;
+  };
+
+  this.deselect = function() {
+    this.path.selected = false;
+  };
+
+  this.translateBy = function(delta) {
+    this.group.position.x += delta.x;
+    this.group.position.y += delta.y;
+  };
+
   this.group = new paper.Group([this.l1.path, this.l2.path, this.l3.path, this.l4.path]);
   this.group.obj_parent = this;
 
   this.group.onMouseDown = function(event) {
     if (this.obj_parent.ctx.selection_mode == false)
       return false;
-    this.selected = true;
-    this.obj_parent.selected = true;
+    this.selected = !this.selected;
   };
 
   return this;
@@ -205,6 +240,22 @@ function Circle(x, y) {
     }
   };
 
+  this.selected = function() {
+    if (this.path.selected)
+      return true;
+
+    return false;
+  };
+
+  this.deselect = function() {
+    this.path.selected = false;
+  };
+
+  this.translateBy = function(delta) {
+    this.path.position.x += delta.x;
+    this.path.position.y += delta.y;
+  };
+
   this.setRadius = function(x, y) {
     this.clear();
     this.radius = Math.sqrt(Math.pow(this.center_x - x, 2) + Math.pow(this.center_y - y, 2));
@@ -217,8 +268,7 @@ function Circle(x, y) {
     this.path.onMouseDown = function(event) {
       if (this.obj_parent.ctx.selection_mode == false)
         return false;
-      this.selected = true;
-      this.obj_parent.selected = true;
+      this.selected = !this.selected;
     }
   };
 
@@ -236,6 +286,22 @@ function Ellipse(x, y) {
     }
   };
 
+  this.selected = function() {
+    if (this.path.selected)
+      return true;
+
+    return false;
+  };
+
+  this.deselect = function() {
+    this.path.selected = false;
+  };
+
+  this.translateBy = function(delta) {
+    this.path.position.x += delta.x;
+    this.path.position.y += delta.y;
+  };
+
   this.setRadius = function(x, y) {
     this.clear();
     this.radius = Math.sqrt(Math.pow(this.center_x - x, 2) + Math.pow(this.center_y - y, 2));
@@ -250,8 +316,7 @@ function Ellipse(x, y) {
     this.path.onMouseDown = function(event) {
       if (this.obj_parent.ctx.selection_mode == false)
         return false;
-      this.selected = true;
-      this.obj_parent.selected = true;
+      this.selected = !this.selected;
     };
 
     paper.view.update();
@@ -269,6 +334,22 @@ function ShakyRect(x1, y1) {
       this.group.remove();
       paper.view.update();
     }
+  };
+
+  this.selected = function() {
+    if (this.group.selected)
+      return true;
+
+    return false;
+  };
+
+  this.deselect = function() {
+    this.group.selected = false;
+  };
+
+  this.translateBy = function(delta) {
+    this.group.position.x += delta.x;
+    this.group.position.y += delta.y;
   };
 
   this.rectTo = function(x2, y2) {
@@ -292,15 +373,14 @@ function ShakyRect(x1, y1) {
     this.group.onMouseDown = function(event) {
       if (this.obj_parent.ctx.selection_mode == false)
         return false;
-      this.selected = true;
-      this.obj_parent.selected = true;
+      this.selected = !this.selected;
     };
+
     paper.view.update();
   };
 
   return this;
 }
-
 
 function RoundedRect(x1, y1) {
   this.x1 = x1;
@@ -311,6 +391,29 @@ function RoundedRect(x1, y1) {
       this.path.remove();
       paper.view.update();
     }
+  };
+
+  this.selected = function() {
+    if (this.path.selected)
+      return true;
+
+    return false;
+  };
+
+  this.deselect = function() {
+    this.path.selected = false;
+  };
+
+  this.translateBy = function(delta) {
+    this.path.position.x += delta.x;
+    this.path.position.y += delta.y;
+  };
+
+  this.selected = function() {
+    if (this.path.selected)
+      return true;
+
+    return false;
   };
 
   this.rectTo = function(x2, y2) {
@@ -328,8 +431,7 @@ function RoundedRect(x1, y1) {
     this.path.onMouseDown = function(event) {
       if (this.obj_parent.ctx.selection_mode == false)
         return false;
-      this.selected = true;
-      this.obj_parent.selected = true;
+      this.selected = !this.selected;
     };
 
     paper.view.update();
@@ -349,10 +451,24 @@ function FreeHandLine(x, y) {
   this.path.onMouseDown = function(event) {
     if (this.obj_parent.ctx.selection_mode == false)
       return false;
-    this.selected = true;
-    this.obj_parent.selected = true;
+    this.selected = !this.selected;
   };
 
+  this.selected = function() {
+    if (this.path.selected)
+      return true;
+
+    return false;
+  };
+
+  this.deselect = function() {
+    this.path.selected = false;
+  };
+
+  this.translateBy = function(delta) {
+    this.path.position.x += delta.x;
+    this.path.position.y += delta.y;
+  };
 
   this.clear = function() {
     this.path.remove();
@@ -382,6 +498,22 @@ function ShakyLine(x, y) {
     }
   };
 
+  this.selected = function() {
+    if (this.path.selected)
+      return true;
+
+    return false;
+  };
+
+  this.deselect = function() {
+    this.path.selected = false;
+  };
+
+  this.translateBy = function(delta) {
+    this.path.position.x += delta.x;
+    this.path.position.y += delta.y;
+  };
+
   this.lineTo = function(x2, y2) {
     this.clear();
     this.line = new Line(this.x1, this.y1, x2, y2, 4);
@@ -392,8 +524,7 @@ function ShakyLine(x, y) {
     this.path.onMouseDown = function(event) {
       if (this.obj_parent.ctx.selection_mode == false)
         return false;
-      this.selected = true;
-      this.obj_parent.selected = true;
+      this.selected = !this.selected;
     };
 
     paper.view.update();
@@ -417,13 +548,27 @@ function StraightLine(x, y) {
 
   this.path.obj_parent = this;
 
+  this.selected = function() {
+    if (this.path.selected)
+      return true;
+
+    return false;
+  };
+
+  this.deselect = function() {
+    this.path.selected = false;
+  };
+
   this.path.onMouseDown = function(event) {
     if (this.obj_parent.ctx.selection_mode == false)
       return false;
-    this.selected = true;
-    this.obj_parent.selected = true;
+    this.selected = !this.selected;
   };
 
+  this.translateBy = function(delta) {
+    this.path.position.x += delta.x;
+    this.path.position.y += delta.y;
+  };
 
   this.clear = function() {
     this.path.remove();
@@ -450,13 +595,28 @@ function Text2D(x, y, txt) {
     fontSize: 20
   };
 
+  this.selected = function() {
+    if (this.text.selected)
+      return true;
+
+    return false;
+  };
+
+  this.deselect = function() {
+    this.text.selected = false;
+  };
+
+  this.translateBy = function(delta) {
+    this.text.position.x += delta.x;
+    this.text.position.y += delta.y;
+  };
+
   this.text.obj_parent = this;
 
   this.text.onMouseDown = function(event) {
     if (this.obj_parent.ctx.selection_mode == false)
       return false;
-    this.selected = true;
-    this.obj_parent.selected = true;
+    this.selected = !this.selected;
   };
 
   this.clear = function() {
@@ -524,14 +684,16 @@ function Eraser(x, y) {
   return this;
 }
 
-function Shaky() {
+function Shaky(canvas) {
   this.clear_canvas = function(ctx, width, height) {
     ctx.clearRect(0, 0, width, height);
   };
 
+  this.canvas = canvas;
   this.diagrams = [];
   this.selection_mode = false;
   var self = this;
+  this.drag = {};
 
   this.circle = function(x, y) {
     var c = new Circle(x, y);
@@ -682,43 +844,31 @@ function Shaky() {
     paper.view.update();
   };
 
-  this.checkHit = function(event, x, y) {
-    var hitOptions = {
-      segments: true,
-      stroke: false,
-      fill: true,
-      tolerance: 20
-    };
+  this.drag = function(x, y) {
+    var deltaX = x - self.drag.x;
+    var deltaY = y - self.drag.y;
 
-    segment = path = null;
-    var p = new paper.Point(x, y);
-    var hitResult = paper.project.hitTest(p, hitOptions);
-    if (!hitResult)
-      return;
+    var delta = new paper.Point(deltaX, deltaY);
 
-    if (event.shiftKey) {
-      if (hitResult.type == 'segment') {
-        hitResult.segment.remove();
-      }
-      return;
-    }
-
-    if (hitResult) {
-      path = hitResult.item;
-      if (hitResult.type == 'segment') {
-        segment = hitResult.segment;
-      } else if (hitResult.type == 'stroke') {
-        var location = hitResult.location;
-        segment = path.insert(location.index + 1, p);
-        path.smooth();
+    for (counter in self.diagrams) {
+      var diagram = self.diagrams[counter];
+      if (diagram.selected()) {
+        diagram.translateBy(delta);
       }
     }
-    movePath = hitResult.type == 'fill';
-    if (movePath)
-      project.activeLayer.addChild(hitResult.item);
+
+    self.drag.x = x;
+    self.drag.y = y;
   };
 
-  this.drag = function(event, x, y) {
-    console.log("Dragging objects");
-  }
+  this.deselect_all = function() {
+    for (counter in self.diagrams) {
+      var diagram = self.diagrams[counter];
+      if (diagram.selected()) {
+        diagram.deselect();
+      }
+    }
+
+    paper.view.update();
+  };
 }
