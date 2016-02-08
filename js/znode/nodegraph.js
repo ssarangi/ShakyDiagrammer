@@ -47,7 +47,6 @@ function NodeGraph(){
     paper.view.draw();
     var img = canvas_render.toDataURL();
     download(img, name + ".png", "image/png");
-    shaky.create_new_eraser();
   };
 
   function resizePaper() {
@@ -55,7 +54,7 @@ function NodeGraph(){
       canvas_render.width = win.width() / 2;
       canvas_render.height = win.height();
       paper.setup(canvas_render);
-      shaky.initialize();
+      shaky.initialize(canvas_render.width, canvas_render.height);
   }
 
   win.resize(resizePaper);
@@ -767,7 +766,9 @@ function NodeGraph(){
     }
 
     if (current_tool == "eraser") {
-      var eraser = new shaky.eraser(pos.x, pos.y);
+      var eraser = shaky.current_eraser;
+      if (eraser != null)
+        eraser = new shaky.eraser(pos.x, pos.y);
       shaky.update_eraser(eraser);
     }
     else if (current_tool == "free_hand_line") {
@@ -812,7 +813,7 @@ function NodeGraph(){
     pos = getMousePos(canvas_render, event);
 
     var dragging = false;
-    var eraser = null;
+    var eraser = shaky.current_eraser;
     if (left_button_down == true) {
       dragging = true;
     }

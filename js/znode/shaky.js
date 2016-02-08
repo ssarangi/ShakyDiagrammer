@@ -658,7 +658,7 @@ function Text2D(x, y, txt) {
 function Eraser(x, y) {
   this.x = x;
   this.y = y;
-  this.background_color = new paper.Color(200 / 255, 200 / 255, 200 / 255, 1.0);
+  this.background_color = new paper.Color(1.0, 1.0, 1.0, 1.0);
   this.render_color = 'white';
 
   this.clear = function() {
@@ -703,8 +703,16 @@ function Eraser(x, y) {
 }
 
 function Shaky(canvas) {
-  this.clear_canvas = function(ctx, width, height) {
-    ctx.clearRect(0, 0, width, height);
+  this.clear_canvas = function(width, height) {
+    var rect = new paper.Path.Rectangle({
+      point: [0, 0],
+      size: [width, height],
+      strokeColor: 'white',
+      selected: true
+    });
+
+    rect.sendToBack();
+    rect.fillColor = '#ffffff';
   };
 
   this.canvas = canvas;
@@ -792,7 +800,9 @@ function Shaky(canvas) {
 
   this.current_eraser = null;
 
-  this.initialize = function() {
+  this.initialize = function(width, height) {
+    this.clear_all();
+    this.clear_canvas(width, height);
     this.current_eraser = new Eraser(0, 0);
   };
 
